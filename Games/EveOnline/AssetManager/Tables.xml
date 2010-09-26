@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE phrasebook [
+          <!ELEMENT phrasebook (dictionary)*>              
+          <!ELEMENT dictionary (phrase)*>
+              <!ATTLIST dictionary name CDATA #REQUIRED>
+              <!ELEMENT phrase (#PCDATA)>
+              <!ATTLIST phrase name CDATA #REQUIRED>
+]>
+ 
+<phrasebook>
+    <dictionary name="tables">
+        <phrase name="init_tables_dic">select table_name from information_schema.tables where table_name = ?</phrase>
+        
+        <phrase name="eaa_cache_named">
+            CREATE TABLE eaa_cache_named (
+                id SERIAL PRIMARY KEY,
+                "name" TEXT NOT NULL UNIQUE,
+                "content" BYTEA NOT NULL
+            );
+        </phrase>
+        
+        <phrase name="eaa_item_value_cache">
+            CREATE TABLE eaa_item_value_cache (
+                id SERIAL PRIMARY KEY,
+                "old" INTEGER NOT NULL DEFAULT '0',
+                created TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+                typeid INTEGER NOT NULL,
+                region VARCHAR(2000) NOT NULL,
+                buy_vol BIGINT NOT NULL DEFAULT '0',
+                sell_vol BIGINT NOT NULL DEFAULT '0',
+                sell_price DOUBLE PRECISION NOT NULL DEFAULT '0',
+                buy_price DOUBLE PRECISION NOT NULL DEFAULT '0',
+                move DOUBLE PRECISION NOT NULL DEFAULT '-1'
+            );
+        </phrase>
+        
+        <phrase name="eaa_sessions">
+            CREATE TABLE eaa_sessions (
+                id CHAR(32) NOT NULL PRIMARY KEY,
+                a_session BYTEA NOT NULL
+            );
+        </phrase>
+        
+        <phrase name="eaa_users">
+            CREATE TABLE eaa_users (
+                id SERIAL PRIMARY KEY,
+                email VARCHAR(255) NOT NULL,
+                password VARCHAR(14) NOT NULL
+            );
+        </phrase>
+        
+        <phrase name="emo_key_value_store">
+            CREATE TABLE emo_key_value_store (
+                id SERIAL PRIMARY KEY,
+                key VARCHAR(255) NOT NULL,
+                value BYTEA
+            );
+        </phrase>
+        
+        
+    </dictionary>
+</phrasebook>

@@ -1,0 +1,214 @@
+function load_url_to_obj( obj, url ) {
+    document.getElementById(obj).src = url;
+}
+
+
+var arrayOfRolloverClasses = new Array();
+var arrayOfClickClasses = new Array();
+var activeRow = false;
+var activeRowClickArray = new Array();
+
+function highlightTableRow()
+{
+    var tableObj = this.parentNode;
+    if(tableObj.tagName!='TABLE') tableObj = tableObj.parentNode;
+
+    if(this!=activeRow) {
+        this.setAttribute('origCl',this.className);
+        this.origCl = this.className;
+    }
+    this.className = arrayOfRolloverClasses[tableObj.id];
+    
+    activeRow = this;
+}
+
+function clickOnTableRow()
+{
+    var tableObj = this.parentNode;
+    if(tableObj.tagName!='TABLE')tableObj = tableObj.parentNode;		
+    
+    if(activeRowClickArray[tableObj.id] && this!=activeRowClickArray[tableObj.id]){
+        activeRowClickArray[tableObj.id].className='';
+    }
+    this.className = arrayOfClickClasses[tableObj.id];
+    
+    activeRowClickArray[tableObj.id] = this;
+    
+}
+
+function resetRowStyle()
+{
+    var tableObj = this.parentNode;
+    if(tableObj.tagName!='TABLE')tableObj = tableObj.parentNode;
+
+    if(activeRowClickArray[tableObj.id] && this==activeRowClickArray[tableObj.id]){
+        this.className = arrayOfClickClasses[tableObj.id];
+        return;	
+    }
+    
+    var origCl = this.getAttribute('origCl');
+    if(!origCl) origCl = this.origCl;
+    this.className=origCl;
+    
+}
+    
+function addTableRolloverEffect(tableId,whichClass,whichClassOnClick)
+{
+    
+    var ua = navigator.userAgent.toLowerCase();
+
+    if ( ua.indexOf( "msie" ) != -1 ) return false;
+    
+    arrayOfRolloverClasses[tableId] = whichClass;
+    arrayOfClickClasses[tableId] = whichClassOnClick;
+    
+    var tableObj = document.getElementById(tableId);
+    var tBody = tableObj.getElementsByTagName('TBODY');
+    if(tBody){
+        var rows = tBody[0].getElementsByTagName('TR');
+    }else{
+        var rows = tableObj.getElementsByTagName('TR');
+    }
+    for(var no=0;no<rows.length;no++){
+        rows[no].onmouseover = highlightTableRow;
+        rows[no].onmouseout = resetRowStyle;
+        
+        if(whichClassOnClick){
+            rows[no].onclick = clickOnTableRow;	
+        }
+    }
+    
+    return true;
+}
+
+(
+    function($) {
+        
+        $.extend({
+            metadata : {
+                defaults : {
+                    type: 'class',
+                    name: 'metadata',
+                    cre: /({.*})/,
+                    single: 'metadata'
+                },
+                setType: function( type, name ){
+                    this.defaults.type = type;
+                    this.defaults.name = name;
+                },
+                get: function( elem, opts ){
+                    var settings = $.extend({},this.defaults,opts);
+                    // check for empty string in single property
+                    if ( !settings.single.length ) settings.single = 'metadata';
+                    
+                    var data = $.data(elem, settings.single);
+                    // returned cached data if it already exists
+                    if ( data ) return data;
+                    
+                    data = "{}";
+                    
+                    var getData = function(data) {
+                        if(typeof data != "string") return data;
+                        
+                        if( data.indexOf('{') < 0 ) {
+                            data = eval("(" + data + ")");
+                        }
+                        return true;
+                    }
+                    
+                    var getObject = function(data) {
+                      if(typeof data != "string") return data;
+                      
+                      data = eval("(" + data + ")");
+                      return data;
+                    }
+                    
+                    if ( settings.type == "html5" ) {
+                        var object = {};
+                        $( elem.attributes ).each(function() {
+                            var name = this.nodeName;
+                            if(name.match(/^data-/)) name = name.replace(/^data-/, '');
+                            else return true;
+                            object[name] = getObject(this.nodeValue);
+                            return true;
+                        });
+                    }
+                    else {
+                      if ( settings.type == "class" ) {
+                        var m = settings.cre.exec( elem.className );
+                        if ( m )
+                          data = m[1];
+                      }
+                      else if ( settings.type == "elem" ) {
+                        if( !elem.getElementsByTagName ) return false;
+                        var e = elem.getElementsByTagName(settings.name);
+                        if ( e.length )
+                          data = $.trim(e[0].innerHTML);
+                      }
+                      else if ( elem.getAttribute != undefined ) {
+                        var attr = elem.getAttribute( settings.name );
+                        if ( attr )
+                          data = attr;
+                      }
+                      object = getObject(data.indexOf("{") < 0 ? "{" + data + "}" : data);
+                    }
+                    
+                    $.data( elem, settings.single, object );
+                    return object;
+                }
+            }
+        });
+        
+        $.fn.metadata = function( opts ){
+            return $.metadata.get( this[0], opts );
+        };
+    }
+)(jQuery);
+
+function get_bom ( id ) {
+    $.post(
+        "item",
+        { type_id : id },
+        make_bom_dialog,
+        "json"
+    );
+    
+    return false;
+}
+
+function make_bom_dialog ( data, textStatus, XMLHttpRequest ) {
+    
+	var template = $('#bom_template');
+    var html = $( template ).bindTo( data );
+    var dlg_params = { autoOpen: false, title: data.typename, width: '50em' };
+    
+    var dialog = $('<div></div>').html( html ).dialog( dlg_params );
+
+	dialog.dialog('open');
+    
+    var table = $( "#bom_table_"+data.typeid );
+    table.tablesorter(); 
+    
+    return true;
+}
+
+$(document).ready(function(){
+    $("#help_link").toggle(
+        function(event) {
+            event.preventDefault();
+            $("#help").show("slow");
+        },
+        function(event) {
+            event.preventDefault();
+            $("#help").hide("slow");
+        }
+    );
+    $("#help_link2").click(
+        function(event) {
+            event.preventDefault();
+            $("#help").show("slow");
+            $("#help_link2").hide("slow");
+        }
+    );
+    
+});

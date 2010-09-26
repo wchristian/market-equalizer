@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!DOCTYPE phrasebook [
+          <!ELEMENT phrasebook (dictionary)*>              
+          <!ELEMENT dictionary (phrase)*>
+              <!ATTLIST dictionary name CDATA #REQUIRED>
+              <!ELEMENT phrase (#PCDATA)>
+              <!ATTLIST phrase name CDATA #REQUIRED>
+]>
+ 
+<phrasebook>
+    
+    <dictionary name="queries">
+        
+        <phrase name="reprocessing">
+            SELECT T2.typeid, T2.typename, AMV.quantity, recycle
+                FROM typeActivityMaterials AMV
+                INNER JOIN invTypes T1 on T1.typeid = AMV.typeid
+                INNER JOIN invTypes T2 on T2.typeid = AMV.requiredtypeid 
+                INNER JOIN ramActivities A on A.activityid = AMV.activityid
+                INNER JOIN invGroups G on G.groupid = T2.groupid
+                INNER JOIN invCategories C on C.categoryid = G.categoryid
+            WHERE
+                AMV.typeid = ?
+                AND AMV.activityid = 1
+                AND C.categoryName != 'Skill'
+                AND C.categoryName != 'Commodity'
+                AND AMV.quantity != 0
+        </phrase>
+        
+        <phrase name="blueprint_ids">
+            SELECT producttypeid, blueprinttypeid FROM invBlueprintTypes
+        </phrase>
+        
+        <phrase name="item_id_details">
+            SELECT typeid,typename,portionsize FROM invTypes
+        </phrase>
+        
+        <phrase name="region_list">
+            SELECT regionid,regionname FROM mapregions
+        </phrase>
+        
+        <phrase name="get_named_cache">
+            SELECT content FROM eaa_cache_named WHERE name = ?
+        </phrase>
+        
+        <phrase name="store_named_cache">
+            INSERT INTO eaa_cache_named (name,content) VALUES (?,?) 
+        </phrase>
+        
+        <phrase name="get_item_poll_time">
+            SELECT time FROM eaa_item_poll_times WHERE typeid=?;
+        </phrase>
+        
+        <phrase name="get_item_poll_times">
+            SELECT typeid,time FROM eaa_item_poll_times
+        </phrase>
+        
+        <phrase name="get_item_value">
+            SELECT * FROM emo_item_value_cache WHERE typeid = ? AND region = ? AND "old" = ?
+        </phrase>
+        
+        <phrase name="insert_item_value_data">
+            INSERT INTO emo_item_value_cache ( :keys , created ) VALUES ( :placeholders , UTC_TIMESTAMP() );
+        </phrase>
+        
+        <phrase name="expire_item_value_data">
+            UPDATE emo_item_value_cache SET "old" = 1 WHERE typeid = ? AND region LIKE ?;
+        </phrase>
+        
+        <phrase name="update_market_export">
+            UPDATE emo_exports
+            SET content = ?, reportedtime = ?, source = ?, "old" = 0
+            WHERE typeid = ?
+                AND regionid = ?
+                AND source = ?;
+        </phrase>
+        
+        <phrase name="insert_market_export">
+            INSERT INTO emo_exports ( :keys ) VALUES ( :placeholders )
+        </phrase>
+        
+        <phrase name="empty_item_value_table">
+            DELETE FROM eaa_item_value_cache;
+        </phrase>
+        
+        <phrase name="get_order_list">
+            SELECT * FROM emo_item_orders WHERE bid = ? AND region_id IN ( :region ) AND typeid = ? ORDER BY price ASC
+        </phrase>
+        
+        <phrase name="update_item_poll_time">
+            REPLACE INTO eaa_item_poll_times (typeid,time) VALUES (?,?);
+        </phrase>
+        
+        <phrase name="delete_from_item_value_table">
+            DELETE FROM eaa_item_value_cache WHERE typeid = ?;
+        </phrase>
+        
+        <phrase name="insert_into_order_table">
+            INSERT INTO emo_item_orders
+            ( typeid, bid, region_id,  vol_remain, station_id, price, duration, issued, expired )
+             VALUES( ?,?,?,?,?,?,?,?,? );
+        </phrase>
+        
+        
+    </dictionary>
+</phrasebook>

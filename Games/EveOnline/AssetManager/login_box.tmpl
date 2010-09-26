@@ -1,0 +1,26 @@
+<form name="loginform" method="[% options.FORM_SUBMIT_METHOD %]" action="[% action %]">
+  <div class="login">
+    <div class="login_header">Sign In</div>
+    <div class="login_content">
+      <ul class="message">
+[% messages %]
+      </ul>
+      <fieldset>
+        <label for="[% username %]">Email</label>
+        <input id="authen_loginfield" tabindex="1" type="text" name="[% username %]" size="20" value="[% username_value %]" /><br />
+        <label for="[% password %]">Password</label>
+        <input id="authen_passwordfield" tabindex="2" type="password" name="[% password %]" size="20" /><br />
+        [% rememberuser %]
+      </fieldset>
+    </div>
+    <div class="login_footer">
+      <div class="buttons">
+        <input id="authen_loginbutton" tabindex="[% submit_tabindex %]" type="submit" name="authen_loginbutton" value="Sign In" class="button" />
+        [% register %]
+        [% forgotpassword %]
+      </div>
+    </div>
+  </div>
+  <input type="hidden" name="destination" value="[% destination %]" />
+  <input type="hidden" name="rm" value="[% runmode %]" />
+</form>

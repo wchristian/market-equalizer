@@ -1,0 +1,318 @@
+[% WRAPPER wrapper.tmpl %]
+
+[% IF marp %]
+
+    <div style="float:left;">
+
+    <div style="float:left;">
+<div class="setting_box">
+
+
+</div>
+
+<div class="setting_box">
+Stack price quantification: <br />
+            [% SWITCH quant_mode %]
+                [%   CASE 'batch' %]
+                    [ Batch ]
+                    <a href="?quant_mode=single">Single</a>
+                [%   CASE 'single' %]
+                    <a href="?quant_mode=batch">Batch</a>
+                    [ Single ]
+            [% END %]
+</div>
+</div>
+<br style="clear:both;">
+
+<div class="setting_box">
+<form method="post">
+    <div style="float:left;width:4em;">
+Broker<br />Fee:<br />
+<input name="broker_fee" type="text" size="4" value="[% c.session.param('broker_fee') %]" />
+    </div>
+    <div style="float:left;"><br />
+<input type="submit" value="Set" />
+    </div>
+</form>
+</div>
+<br style="clear:both;">
+
+<div class="setting_box">
+Sort Container Contents By:
+<form method="post">
+<select name="container_sort_method_1">
+    [% FOREACH sort IN sort_list %]
+        <option value="[% sort.val %]" [% sort.select_1 %]>[% sort.name %]</option>
+    [% END %]
+</select>
+<select name="container_sort_method_2">
+    [% FOREACH sort IN sort_list %]
+        <option value="[% sort.val %]" [% sort.select_2 %]>[% sort.name %]</option>
+    [% END %]
+</select>
+<select name="container_sort_method_3">
+    [% FOREACH sort IN sort_list %]
+        <option value="[% sort.val %]" [% sort.select_3 %]>[% sort.name %]</option>
+    [% END %]
+</select>
+
+<input type="submit" value="Sort" />
+</form>
+</div>
+
+</div>
+
+<div class="setting_box">
+Regions:
+<form method="post">
+<select name="regions" multiple size="8">
+            [% FOREACH region IN region_list %]
+    <option value="[% region.regionid %]" [% region.select %]>[% region.regionname %]</option>
+            [% END %]
+</select>
+<br />
+<input type="submit" value="Select" />
+</form>
+</div>
+
+[% END %]
+
+<table style="width:100%;height:5em;border:0;">
+    <tr>
+        <td style="text-align:center;vertical-align:middle;border:0;width:33%">
+            <span style="font-size:1.25em;font-weight:bold;">What's all this then?</span><br />
+            <span style="font-size:0.8em;">
+                <a href="#" id="help_link">Mash this here link to get explanations</a>
+            </span>
+        </td>
+        <td style="text-align:center;vertical-align:middle;border:0;width:33%">
+            <span style="font-size:1.25em;font-weight:bold;">Like what you see?</span><br />
+            <span style="font-size:0.8em;">
+                Help keep it up-to-date by installing<br />
+                the automatic <a href="http://eve-metrics.com/downloads">EVE-Metrics Uploader</a>
+            </span>
+        </td>
+        <td style="text-align:center;vertical-align:middle;border:0;width:33%">
+            <span style="font-size:1.25em;font-weight:bold;">Want to see more?</span><br />
+            <span style="font-size:0.8em;">
+                Data for other regions will soon be available.<br />
+                <a href="mailto:mithaldu@yahoo.de">Contact me</a> with offers if interested.
+            </span>
+        </td>
+    </tr>
+</table>
+
+<div style="margin:0;width:35em;margin:auto;">
+    <ul style="margin:0;">
+        <li>
+            The daily profits are per batch, with the batch size being defined by the lower value of
+            <strong>Daily Sales</strong> and <strong>Daily Production</strong>. The value that is chosen
+            is indicated by a bright green underline.
+            <a href="#" id="help_link2">More...</a>
+    </ul>
+    <div id="help" style="display:none;">
+        <ul style="margin:0;">
+            <li><strong>Daily Sales</strong> represents how many items of this type you can expect to sell in one day.
+                It is set to half of the whole market movement for the given region since it would be unreasonable to
+                expect a single producer to cover a whole region's sales. The data is sourced
+                from <a href="http://eve-metrics.com">EVE-Metrics</a>.</li>
+            <li><strong>Daily Production</strong> represents the total number of units you can produce with the given
+                skills in one slot with one blueprint.</li>
+            <li>Each of <strong>Daily Sales</strong> and <strong>Daily Production</strong> has a green line underneath
+                it. The brightness indicates how much smaller it is than the other value. If
+                <strong>Daily Production</strong> is smaller than <strong>Daily Sales</strong>, then you can actually
+                increase your profits on this item by running multiple jobs. If it's the reverse then you need to be
+                careful as it might be difficult to actually sell all your production.</li>
+            <li><strong>ROI in days</strong> is the "Return on Investment", weighing up the possible daily profit
+                against the price of the BPO.</li>
+            <li>You can click column titles to sort the table by that value.</li>
+            <li>The green bar under production costs indicates the profit margin on the item in comparison to all
+                others in the table. The red bar indicates the length of a profit margin of 100%. The length of the
+                green bar scales linear from 0% to 100% and logarithmically above that. So any green bar that exceeds
+                the length of the red bar has much more than 100% profit margin.</li>
+            <li>Data for buy and sell volumes is missing because the EVE-Metrics API does not provide that
+                information. A request is pending.</li>
+            <li>Daily Profits is calculated by multiplying the unit profit with whichever is lower of Daily Sales
+                or Daily Production.</li>
+            <li>Unit profit is calculated as follows:<br />
+                unit_profit = sell_price - manuf_cost - ( sell_price * broker_fee ) - ( sell_price * sales_tax )</li>
+            <li>The sales tax is calculated from the Accounting skill level.</li>
+            <li>Prices are updated every 15 minutes.</li>
+            <li><span style="font-size:1.25em;font-weight:bold;">Got more questions?</span> Post them in the
+                <a href="http://www.eveonline.com/ingameboard.asp?a=topic&amp;threadID=1384127">EVE-Online-Forums thread</a>
+                or click the feedback tab on the right.</li>
+        </ul>
+    </div>
+</div>
+
+<div style="display:none;">
+    <div id="bom_template">
+		<!--data-->
+            <center>
+                <table id="bom_table_{typeid}" class="tablesorter" style="font-size:0.75em;border-collapse:collapse;margin:0;">
+                    <thead>
+                        <tr>
+                            <th class="{sorter: 'currency'}">Material</th>
+                            <th class="{sorter: 'currency'}">Required</th>
+                            <th class="{sorter: 'currency'}">Price</th>
+                            <th class="{sorter: 'currency'}">Total Cost</th>
+                            <th class="{sorter: 'currency'}">Available</th>
+                            <th class="{sorter: 'currency'}">Sold per Day</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--bom-->
+                        <tr>
+                            <td>{typename}</td>
+                            <td>{quantity}</td>
+                        <!--value-->
+                            <td>{sell_price}</td>
+                            <td>{sell_price_batch}</td>
+                            <td>{sell_vol}</td>
+                            <td>{move}</td>
+                        <!--value-->
+                        </tr>
+                        <!--bom-->
+                    </tbody>
+                </table>
+            </center>
+		<!--data-->
+    </div>
+</div>
+
+<center>
+    [% FOREACH region IN region_list %][% IF region.select %]<h1>[% region.regionname %]</h1>[% END %][% END %]
+    <form method="post" style="border: 1px solid grey;border-collapse:collapse;padding:0.5em;margin-left:auto;margin-right:auto; width:35em;">
+        <span style="font-size:1em;font-weight:bold;">Current Settings - <a href="?reset_settings=1">Reset</a></span>
+        <br />
+        <br />
+        <table style="font-size:0.75em;border-collapse:collapse;margin:0;">
+            <tr>
+                <th>Industry</th>
+                <th>Production Efficiency</th>
+                <th>Accounting</th>
+                <th>Broker Fee</th>
+            </tr>
+            <tr>
+                <td style="text-align: center;">
+                    <select style="font-size:0.9em;" name="industry_skill">
+                        [%- FOR i IN [ 0..5 ] %]
+                        <option value="[% i %]"[% IF i == c.session.param('industry_skill') %] selected="selected"[% END %]>[% i %]</option>
+                        [%- END %]
+                    </select>
+                </td>
+                <td style="text-align: center;">
+                    <select style="font-size:0.9em;" name="prod_eff_level">
+                        [%- FOR i IN [ 0..5 ] %]
+                        <option value="[% i %]"[% IF i == c.session.param('prod_eff_level') %] selected="selected"[% END %]>[% i %]</option>
+                        [%- END %]
+                    </select>
+                </td>
+                <td style="text-align: center;">
+                    <select style="font-size:0.9em;" name="accounting">
+                        [%- FOR i IN [ 0..5 ] %]
+                        <option value="[% i %]"[% IF i == c.session.param('accounting') %] selected="selected"[% END %]>[% i %]</option>
+                        [%- END %]
+                    </select>
+                </td>
+                <td style="text-align: center;">
+                    <input style="font-size:0.9em;" type="text" name="broker_fee" value="[% c.session.param('broker_fee') %]" size="5" />
+                </td>
+            </tr>
+        </table>
+        <table style="font-size:0.75em;border-collapse:collapse;margin:0;">
+            <tr>
+                <th>Production Slots</th>
+                <th>Blueprint ME</th>
+            </tr>
+            <tr>
+                <td style="text-align: center;">
+                    <select style="font-size:0.9em;" name="production_slots">
+                        [%- FOR i IN [ 1..11 ] %]
+                        <option value="[% i %]"[% IF i == c.session.param('production_slots') %] selected="selected"[% END %]>[% i %]</option>
+                        [%- END %]
+                    </select>
+                </td>
+                <td style="text-align: center;">
+                    <input style="font-size:0.9em;" type="text" name="bp_mat_level" value="[% c.session.param('bp_mat_level') %]" size="3" />
+                </td>
+            </tr>
+        </table>
+        <table style="font-size:0.75em;border-collapse:collapse;margin:0;">
+            <tr>
+                <th>Minimum Profit</th>
+                <th>Maximum ROI</th>
+                <th>Minimum Margin</th>
+                <th>Hidden Items</th>
+            </tr>
+            <tr>
+                <td style="text-align: center;">
+                    <input style="font-size:0.9em;" type="text" name="minimum_profit" value="[% c.session.param('minimum_profit') %]" size="8" />
+                </td>
+                <td style="text-align: center;">
+                    <input style="font-size:0.9em;" type="text" name="maximum_roi" value="[% c.session.param('maximum_roi') %]" size="5" />
+                </td>
+                <td style="text-align: center;">
+                    <input style="font-size:0.9em;" type="text" name="minimum_margin" value="[% c.session.param('minimum_margin') %]" size="5" /> %
+                </td>
+                <td style="text-align: center;font-size:0.9em;">
+                    [% c.hidden_item_count %] ( [% c.hidden_item_percentage %] % )
+                </td>
+            </tr>
+        </table>
+        <table style="font-size:0.75em;border-collapse:collapse;margin:0;">
+            <tr>
+                <th>Excess</th>
+            </tr>
+            <tr>
+                <td style="text-align: center;">
+                    <select style="font-size:0.9em;" name="column_excess">
+                        <option value="1"[% IF c.session.param('column_excess') %] selected="selected"[% END %]>show</option>
+                        <option value="0"[% IF !c.session.param('column_excess') %] selected="selected"[% END %]>hide</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <br />
+        <input type="submit" value="Set" />
+    </form>
+
+
+
+<table id="asset_table" class="tablesorter">
+
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th class="{sorter: 'currency'}">Qty</th>
+            <th class="{sorter: 'currency'}">Buy<br />Vol</th>
+            <th class="{sorter: 'currency'}">Buy<br />Price</th>
+            <th class="{sorter: 'currency'}">Sell<br />Price</th>
+            <th class="{sorter: 'currency'}">Sell<br />Vol</th>
+            <th class="{sorter: 'currency'}">Manuf. Cost</th>
+            <th class="{sorter: 'currency'}">Daily<br />Profit</th>
+            <th class="{sorter: 'currency'}">Daily<br />Sales</th>
+            <th class="{sorter: 'currency'}">Daily<br />Production</th>
+            <th class="{sorter: 'currency'}">ROI<br />in days</th>
+            <th class="{sorter: 'currency'}">BP Price</th>
+            <th class="{sorter: 'currency'}">Margin</th>
+            [% IF c.session.param('column_excess') %]<th class="{sorter: 'currency'}">Excess</th>[% END %]
+        </tr>
+    </thead>
+    <tbody>
+[% INCLUDE container_list.tmpl  contents = contents, spacer = 0 %]
+    </tbody>
+</table>
+
+</center>
+
+<script type="text/javascript">
+addTableRolloverEffect('asset_table','tableRollOverEffect1','tableRowClickEffect1');
+</script>
+
+<br /><br />
+<pre>[% query %]</pre>
+
+
+[% END %]

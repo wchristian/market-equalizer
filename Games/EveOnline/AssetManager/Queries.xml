@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<!DOCTYPE phrasebook [
+          <!ELEMENT phrasebook (dictionary)*>              
+          <!ELEMENT dictionary (phrase)*>
+              <!ATTLIST dictionary name CDATA #REQUIRED>
+              <!ELEMENT phrase (#PCDATA)>
+              <!ATTLIST phrase name CDATA #REQUIRED>
+]>
+ 
+<phrasebook>
+    
+    <dictionary name="queries">
+        
+        <phrase name="reprocessing">
+            SELECT T2.typeid, T2.typename, AMV.quantity, AMV.recycle, AMV.damageperjob
+                FROM typeActivityMaterials AMV
+                INNER JOIN invTypes T2 on T2.typeid = AMV.requiredtypeid 
+            WHERE
+                AMV.typeid = ?
+                AND AMV.activityid = 6
+                AND AMV.damageperjob = 1
+                AND AMV.quantity != 0
+                AND T2.marketgroupid != 20
+                AND T2.marketgroupid != 802
+                AND T2.marketgroupid != 803
+                AND T2.marketgroupid != 804
+                AND T2.marketgroupid != 805
+        </phrase>
+        
+        <phrase name="manufacturing">
+            SELECT T2.typeid, T2.typename, AMV.quantity, recycle
+                FROM typeActivityMaterials AMV
+                INNER JOIN invTypes T1 on T1.typeid = AMV.typeid
+                INNER JOIN invTypes T2 on T2.typeid = AMV.requiredtypeid 
+                INNER JOIN ramActivities A on A.activityid = AMV.activityid
+                INNER JOIN invGroups G on G.groupid = T2.groupid
+                INNER JOIN invCategories C on C.categoryid = G.categoryid
+            WHERE
+                AMV.typeid = ?
+                AND AMV.activityid = 1
+                AND C.categoryName != 'Skill'
+                AND AMV.quantity != 0
+        </phrase>
+        
+        <phrase name="simple_manufacturing">
+            SELECT t.typeid, t.typename, m.quantity
+            FROM invtypematerials AS m
+                INNER JOIN invtypes AS t
+                    ON m.materialTypeID = t.typeid
+            WHERE m.typeid = ?
+        </phrase>
+        
+        <phrase name="extra_manufacturing">
+            SELECT t.typeid, t.typename, r.quantity, r.damageperjob
+            FROM ramTypeRequirements AS r
+                INNER JOIN invTypes AS t
+                    ON r.requiredtypeid = t.typeid
+                INNER JOIN invGroups AS g
+                    ON t.groupid = g.groupid
+            WHERE r.typeid = ?
+                AND r.activityid = 1
+                AND g.categoryid != 16
+        </phrase>
+        
+        <phrase name="blueprint_ids">
+            SELECT producttypeid, blueprinttypeid FROM invBlueprintTypes
+        </phrase>
+        
+        <phrase name="item_id_details">
+            SELECT T.typeid,T.typename,T.portionsize,T.marketgroupid,B.blueprinttypeid,B.wastefactor,T2.marketgroupid as bp_marketgroup_id,B.productiontime,B.productivitymodifier,B.techlevel,T.baseprice  FROM invtypes T
+            LEFT JOIN invBlueprintTypes B ON B.producttypeid = T.typeid
+            LEFT JOIN invTypes T2 ON B.blueprinttypeid = T2.typeid
+        </phrase>
+        
+        <phrase name="region_list">
+            SELECT regionid,regionname FROM mapregions
+        </phrase>
+        
+        <phrase name="station_data">
+            SELECT
+                st.stationid, so.solarsystemname, so.regionid, re.regionname, so.security
+            FROM stastations st
+            JOIN mapsolarsystems so
+                ON st.solarsystemid = so.solarsystemid
+            JOIN mapregions re
+                ON re.regionid = so.regionid
+        </phrase>
+        
+        <phrase name="get_named_cache">
+            SELECT content FROM eaa_cache_named WHERE name = ?
+        </phrase>
+        
+        <phrase name="store_named_cache">
+            INSERT INTO eaa_cache_named (name,content) VALUES (?,?) 
+        </phrase>
+        
+        <phrase name="get_item_poll_time">
+            SELECT time FROM eaa_item_poll_times WHERE typeid=?;
+        </phrase>
+        
+        <phrase name="get_item_poll_times">
+            SELECT typeid,time FROM eaa_item_poll_times
+        </phrase>
+        
+        <phrase name="get_all_item_values">
+            SELECT * FROM eaa_item_value_cache WHERE region = ? AND "old" = ?
+        </phrase>
+        
+        <phrase name="insert_item_value_data">
+            INSERT INTO eaa_item_value_cache ( :keys ) VALUES ( :placeholders );
+        </phrase>
+        
+        <phrase name="empty_item_value_table">
+            DELETE FROM eaa_item_value_cache;
+        </phrase>
+        
+        <phrase name="get_order_list">
+            SELECT * FROM eaa_item_orders WHERE typeid = ? AND region IN ( :region ) AND type_sell = ? ORDER BY price DESC
+        </phrase>
+        
+        <phrase name="update_item_poll_time">
+            REPLACE INTO eaa_item_poll_times (typeid,time) VALUES (?,?);
+        </phrase>
+        
+        <phrase name="delete_from_order_table">
+            DELETE FROM eaa_item_orders WHERE expires &lt; ?;
+        </phrase>
+        
+        <phrase name="delete_from_item_value_table">
+            DELETE FROM eaa_item_value_cache WHERE typeid = ?;
+        </phrase>
+        
+        <phrase name="insert_into_order_table">
+            REPLACE INTO eaa_item_orders
+            ( typeid, type_sell, region,  vol_remain, security, price, id, expires )
+             VALUES(?,?,?,?,?,?,?,?);
+        </phrase>
+        
+        
+    </dictionary>
+</phrasebook>

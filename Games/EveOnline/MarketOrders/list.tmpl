@@ -1,0 +1,103 @@
+[% WRAPPER wrapper.tmpl %]
+
+
+    <div style="float:left;">
+
+    <div style="float:left;">
+<div class="setting_box">
+
+</div>
+
+<div class="setting_box">
+Stack price quantification: <br>
+            [% SWITCH quant_mode %]
+                [%   CASE 'batch' %]
+                    [ Batch ]
+                    <a href="?quant_mode=single">Single</a>
+                [%   CASE 'single' %]
+                    <a href="?quant_mode=batch">Batch</a>
+                    [ Single ]
+            [% END %]
+</div>
+</div>
+<br style="clear:both;">
+
+<div class="setting_box">
+<form method="post">
+    <div style="float:left;width:5em;">
+Broker Fee:<br>
+<input name="broker_fee" type="text" size="6" value="[% c.session.param('broker_fee') %]" />
+    </div>
+    <div style="float:left;"><br>
+<input type="submit" value="Set" />
+    </div>
+</form>
+</div>
+<br style="clear:both;">
+
+<div class="setting_box">
+Sort Container Contents By:
+<form method="post">
+<select name="container_sort_method_1">
+    [% FOREACH sort IN sort_list %]
+        <option value="[% sort.val %]" [% sort.select_1 %]>[% sort.name %]</option>
+    [% END %]
+</select>
+<select name="container_sort_method_2">
+    [% FOREACH sort IN sort_list %]
+        <option value="[% sort.val %]" [% sort.select_2 %]>[% sort.name %]</option>
+    [% END %]
+</select>
+<select name="container_sort_method_3">
+    [% FOREACH sort IN sort_list %]
+        <option value="[% sort.val %]" [% sort.select_3 %]>[% sort.name %]</option>
+    [% END %]
+</select>
+ 
+<input type="submit" value="Sort" />
+</form>
+</div>
+
+</div>
+
+<div class="setting_box">
+Regions:
+<form method="post">
+<select name="regions" multiple size="8">
+            [% FOREACH region IN region_list %]
+    <option value="[% region.regionid %]" [% region.select %]>[% region.regionname %]</option>
+            [% END %]
+</select>
+<br>
+<input type="submit" value="Select" />
+</form>
+</div>
+
+<br style="clear:both;">
+<br>
+<table id="asset_table" class="tablesorter">
+
+        <thead>
+    <tr>
+        <th>Name</th>
+        <th class="{sorter: 'digit'}">Qty</th>
+        <th class="{sorter: 'digit'}">BuyVol</th>
+        <th class="{sorter: 'digit'}">BuyPrice</th>
+        <th class="{sorter: 'digit'}">SellPrice</th>
+        <th class="{sorter: 'digit'}">SellVol</th>
+        <th class="{sorter: 'digit'}">Repro</th>
+        <th class="{sorter: 'text'}">Sugg</th>
+        <th class="{sorter: 'percent'}">Marg. %</th>
+        <th class="{sorter: 'digit'}">Marg. Abs</th>
+    </tr>
+        </thead>
+    <tbody>
+[% INCLUDE container_list.tmpl  contents = contents, spacer = 0 %]
+    </tbody>
+</table>
+
+<br><br>
+<pre>[% query %]</pre>
+
+
+[% END %]

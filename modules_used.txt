@@ -1,0 +1,42 @@
+- Titanium : CGI::Application::Dispatch
+No.
+
+- CGI::Application::Server
+No.
+
+- Titanium : CGI::Application::Plugin::DBH
+Database access.
+
+- CGI::Application::Plugin::DebugScreen
+Debug info in case of error.
+
+- CGI::Application::Plugin::DevPopup + HTTPHeaders + Timing
+Debug info while developing.
+
+- CGI::Application::Plugin::AutoRunmode
+Automatically converts " : Runmode " subs into runmodes.
+
+- CGI::Application::Plugin::TT
+Template Toolkit for more sensible template directory choice as well as easier debuggable HTML in templates.
+
+- Titanium : CGI::Application::Plugin::LogDispatch
+Logs debug info for DevPopup.
+
+- Titanium : CGI::Application::Plugin::ConfigAuto
+Initialized in the instance script. Loads config data of any format.
+
+- Titanium : CGI::Application::Plugin::ErrorPage
+Can be used to throw up a page with a custom error message. Not used now, DebugScree
+
+- Titanium : CGI::Application::Plugin::FillInForm
+- Titanium : CGI::Application::Plugin::Forward
+- Titanium : CGI::Application::Plugin::Redirect
+- Titanium : CGI::Application::Plugin::Session
+- Titanium : CGI::Application::Plugin::Stream
+- Titanium : CGI::Application::Plugin::ValidateRM
+- Titanium : CGI::Application::Standard::Config
+- Titanium : Module::Starter::Plugin::CGIApp
+- Titanium : Test::WWW::Mechanize::CGIApp
+- CGI::Application::Plugin::MessageStack
+- CGI::Application::Plugin::RunmodeDeclare
+- CGI::Application::Plugin::DBIProfile

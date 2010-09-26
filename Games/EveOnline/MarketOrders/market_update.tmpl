@@ -1,0 +1,16 @@
+[% WRAPPER wrapper.tmpl %]
+
+<center>
+<a href="javascript:load_url_to_obj('update_log', 'perform_ec_update' )">Update EC Prices</a> | 
+<a href="javascript:load_url_to_obj('update_log', 'perform_market_update' )">Update All Items</a> | 
+<a href="javascript:load_url_to_obj('update_log', 'perform_history_update' )">Update All Item Histories</a>
+</center>
+<br>
+
+
+<iframe id="update_log"
+    scrolling="no" width="88%" 
+    height="600px" style="margin-left:5%;margin-right:5%; padding:1%; border: 1px solid white;">
+</iframe>
+
+[% END %]

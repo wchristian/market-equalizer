@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<!DOCTYPE phrasebook [
+          <!ELEMENT phrasebook (dictionary)*>              
+          <!ELEMENT dictionary (phrase)*>
+              <!ATTLIST dictionary name CDATA #REQUIRED>
+              <!ELEMENT phrase (#PCDATA)>
+              <!ATTLIST phrase name CDATA #REQUIRED>
+]>
+ 
+<phrasebook>
+    <dictionary name="tables">
+        <phrase name="init_tables_dic">select table_name from information_schema.tables where table_name = ?</phrase>
+        
+        <phrase name="emo_item_orders">
+            CREATE TABLE emo_item_orders (
+                typeid INTEGER NOT NULL,
+                bid INTEGER NOT NULL,
+                region_id INTEGER NOT NULL,
+                vol_remain BIGINT NOT NULL,
+                station_id INTEGER NOT NULL,
+                duration VARCHAR(16) NOT NULL,
+                issued TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+                expired TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+                price DOUBLE PRECISION NOT NULL
+            );
+        </phrase>
+        
+        <phrase name="emo_item_value_cache">
+            CREATE TABLE emo_item_value_cache (
+                id SERIAL PRIMARY KEY,
+                "old" INTEGER NOT NULL DEFAULT '0',
+                created TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+                typeid INTEGER NOT NULL,
+                region VARCHAR(2000) NOT NULL,
+                buy_vol BIGINT NOT NULL DEFAULT '0',
+                sell_vol BIGINT NOT NULL DEFAULT '0',
+                sell_price DOUBLE PRECISION NOT NULL DEFAULT '0',
+                buy_price DOUBLE PRECISION NOT NULL DEFAULT '0',
+                move DOUBLE PRECISION NOT NULL DEFAULT '-1'
+            );
+        </phrase>
+        
+        <phrase name="emo_exports">
+            CREATE TABLE emo_exports (
+                typeid INTEGER NOT NULL,
+                regionid INTEGER NOT NULL,
+                "old" INTEGER NOT NULL DEFAULT '0',
+                reportedtime TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+                "source" VARCHAR(2) NOT NULL,
+                "content" bytea NOT NULL,
+                PRIMARY KEY( typeid, regionid, "source" )
+            );
+        </phrase>
+        
+               <!--      <phrase name="indexes">
+            CREATE INDEX IF NOT EXISTS "eaa_get_order_list" ON "eaa_item_orders" ("typeid" ASC, "type_sell" ASC, "region" ASC, "price" DESC);
+            CREATE INDEX IF NOT EXISTS "eaa_get_order_list_2" ON "eaa_item_orders" ("typeid" ASC, "type_sell" ASC, "region" ASC);
+            CREATE INDEX IF NOT EXISTS "eaa_get_order_list_3" ON "eaa_item_orders" ("typeid" ASC, "type_sell" ASC);
+            CREATE INDEX IF NOT EXISTS "eaa_get_order_list_4" ON "eaa_item_orders" ("typeid" ASC);
+            CREATE INDEX IF NOT EXISTS "eaa_get_order_list_5" ON "eaa_item_orders" ("price" DESC); 
+        </phrase>-->
+        
+        <phrase name="emo_key_value_store">
+            CREATE TABLE eaa_item_value_cache (
+                id SERIAL PRIMARY KEY,
+                key VARCHAR(255) NOT NULL,
+                value BYTEA
+            );
+        </phrase>
+        
+        <phrase name="eaa_sessions">
+            CREATE TABLE eaa_sessions (
+                id CHAR(32) NOT NULL PRIMARY KEY,
+                a_session BYTEA NOT NULL
+            );
+        </phrase>
+        
+        <phrase name="emo_utc_timestamp">
+            CREATE OR REPLACE FUNCTION UTC_TIMESTAMP() RETURNS timestamp AS $$
+            SELECT current_timestamp at time zone 'utc';
+            $$ LANGUAGE SQL;
+        </phrase>
+        
+    </dictionary>
+</phrasebook>

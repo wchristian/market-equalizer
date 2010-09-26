@@ -1,0 +1,19 @@
+[% WRAPPER wrapper.tmpl %]
+
+<center>
+<a href="javascript:load_url_to_obj('update_log', 'perform_market_update?ids=all' )">Update All Items</a> |
+<a href="javascript:load_url_to_obj('update_log', 'perform_market_update?ids=vacuum' )">Compact DB</a><br />
+Compact every 3 files. Update process will stop automatically after 3 files are done.
+</center>
+<br />
+
+
+<iframe id="update_log"
+    [% IF ids %]
+        src="perform_market_update?ids=[% ids %]"
+    [% END %]
+
+    scrolling="no" width="88%"
+    height="600px" style="margin-left:5%;margin-right:5%; padding:1%; border: 1px solid white;"></iframe>
+
+[% END %]

@@ -1,0 +1,11 @@
+
+/dumps/last_update
+*.log
+/handler/nytout.out
+/handler/nytprof.out
+WebService
+/apo100-sqlite3-v1.db
+/apo100-sqlite3-v1.db.bz2
+/dom103-sqlite3-v1.db
+/dom103-sqlite3-v1.db.bz2
+/market.kpf

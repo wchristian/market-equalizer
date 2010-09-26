@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>EVE-Profits - Showing you how to make the most of your ISK</title>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/base/base-min.css" />
+        <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/themes/base/jquery-ui.css" />
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="/jquery.tablesorter.js"></script>
+        <script type="text/javascript" src="/jbind.1.5.8-min.js"></script>
+
+        [% IF c.param('main_css') %]
+            <link rel="stylesheet" type="text/css" href="[% c.param('css_dir') %][% c.param('main_css') %]">
+        [% ELSE %]
+            <style type="text/css">
+                [% INCLUDE main.css.tmpl %]
+            </style>
+        [% END %]
+
+        [% IF c.param('main_js') %]
+            <script src="[% c.param('js_dir') %][% c.param('main_js') %]" type="text/javascript"></script>
+        [% ELSE %]
+            <script type="text/javascript">
+                <!--
+                [% INCLUDE main.js.tmpl %]
+                -->
+            </script>
+        [% END %]
+    </head>
+
+    <body>
+        <div style="position:absolute;right:0.75em;top:0.75em;font-size:0.8em;">
+            <strong>Price Updater</strong><br />
+            Last update: [% time_to_prev_update %] minutes ago<br />
+            Next update: in [% time_to_next_update %] minutes<br />
+            Status: [% emo_status %]
+        </div>
+        <center>
+        <span style="font-size:2em;font-weight:bold;">EVE-Profits</span><br />
+        Production, Reprocessing*, Trading*<br />
+        <br />
+        <span style="font-size:0.6em;float:right;">* work in progress</span>
+        </center>
+
+        <hr style="clear:both;" />
+        <br />
+
+
+       [% content %]
+
+
+
+        <br />
+        <br />
+        <hr />
+
+        <!-- :LINT: -->
+
+
+            <script type="text/javascript"> $(document).ready(function() {
+
+
+        $(document).ready(function()
+    {
+        $("#asset_table").tablesorter();
+    }
+);
+
+ } ); </script>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-15060053-1");
+pageTracker._setDomainName("none");
+pageTracker._setAllowLinker(true);
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+<script type="text/javascript">
+var uservoiceOptions = {
+  /* required */
+  key: 'eveprofits',
+  host: 'eveprofits.uservoice.com',
+  forum: '43955',
+  showTab: true,
+  /* optional */
+  alignment: 'right',
+  background_color:'#2D2D37',
+  text_color: 'white',
+  hover_color: '#06C',
+  lang: 'en'
+};
+
+function _loadUserVoice() {
+  var s = document.createElement('script');
+  s.setAttribute('type', 'text/javascript');
+  s.setAttribute('src', ("https:" == document.location.protocol ? "https://" : "http://") + "cdn.uservoice.com/javascripts/widgets/tab.js");
+  document.getElementsByTagName('head')[0].appendChild(s);
+}
+_loadSuper = window.onload;
+window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function() { _loadSuper(); _loadUserVoice(); };
+</script>
+
+    </body>
+
+</html>

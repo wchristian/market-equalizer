@@ -1,0 +1,11 @@
+[% WRAPPER wrapper.tmpl %]
+
+<form method="post" action="perform_eve_metrics_update" enctype="multipart/form-data">
+file: <input type='file' name="data" /><br>
+type: <input name="type_id" type="text" size="18" /><br>
+region: <input name="region_id" type="text" size="18" /><br>
+<br>
+<input type="submit" value="Select" />
+</form>
+
+[% END %]

@@ -1,0 +1,13 @@
+One more analysis page needed for non-station traders.
+You have already huge amount of market data of sell and buy orders and volume(in cargo bay) of product is also known fact.
+
+From these numbers you can already calculate what are most profitable products to buy and sell. Without just browsing throught all products. 
+
+User interface would have "just" next inputs.
+-Ships cargo capacity
+-Number of jumps
+-Enable/disable low/0.0 sec
+
+And i guess it's possible to do analysis what are best products currently to make profits. Just as a trade. 
+
+As an result i would get best profitable deals as buyer and seller of product depending what is my cargo capacity. 

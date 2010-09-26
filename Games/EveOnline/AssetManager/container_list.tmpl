@@ -1,0 +1,33 @@
+
+[%- FOREACH item IN contents -%]
+    [%- IF item.value.typeid -%]
+    <tr>
+        <td[% IF item.rt %] class="[% item.rt %]"[% END %]>[% item.typeid %]</td>
+        <td class='name'>[% item.itemname %]</td>
+        <td>[% item.quantity %]</td>
+        <td>[% item.value.buy_vol %]</td>
+        <td title="[% item.single_buy_price %]">[% item.batch_buy_price %]</td>
+        <td title="[% item.single_sell_price %]">[% item.batch_sell_price %]</td>
+        <td>[% item.value.sell_vol %]</td>
+        <td title="[% item.single_manuf_cost %]">
+            <a href="#" onclick="return get_bom( [% item.typeid %] )">[% item.batch_manuf_cost %]</a>
+            [%- IF item.adapt_profit_mult %]
+                <div class="green_bar" style="width:[% item.adapt_profit_mult %]px;"></div>
+                <div class="red_bar" style="width:[% c.normal_profit_range %]px;"></div>
+            [%- END %]
+        </td>
+        <td><span style="border: 2px solid rgb(45,[% item.unit_profit_green %],55);padding:1px;">
+                [%- item.daily_profit %]
+        </span></td>
+        <td><span style="border-bottom: 2px solid rgb(45,[% item.sales_green %],55);">[% IF item.sales_guess %] ?[% END %][% item.sales %]</span></td>
+        <td><span style="border-bottom: 2px solid rgb(45,[% item.excess_green %],55);">[% item.prod_per_day %]</span></td>
+        <td>[% item.days_til_profit %]</td>
+        <td>[% item.bp_price %]&nbsp;M</td>
+        <td>[% item.margin %]&nbsp;%</td>
+        [% IF c.session.param('column_excess') %]<td>[% item.excess %]&nbsp;%</td>[% END %]
+    </tr>
+    [%- END -%]
+    [%- IF item.contents -%]
+    [%- INCLUDE container_list.tmpl  contents = item.contents -%]
+    [%- END -%]
+[%- END %]

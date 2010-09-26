@@ -1,0 +1,58 @@
+
+[% FOREACH item IN contents %]
+    [% IF item.regionid && !item.locationid %]
+        <tr>
+            <th></th>
+            <th>Qty</th>
+            <th>BuyVol</th>
+            <th>BuyPrice</th>
+            <th>SellPrice</th>
+            <th>SellVol</th>
+            <th>Repro</th>
+            <th>Sugg</th>
+            <th>Marg. %</th>
+            <th>Marg. Abs</th>
+        </tr>
+    [% END %]
+    
+    <tr  [% IF item.contents %]class="container"[% END %]>
+        <td class='name'><span style="padding-left:[% spacer %]em;">[% item.itemname %]</span></td>
+        <td>[% item.quantity %]</td>
+        
+        [% IF item.value %]
+            [% SWITCH quant_mode %]
+                [%   CASE 'single' %]
+                    <td>[% item.value.buy_vol_sim %]</td>
+                    <td>[% shorten( item.value.buy_price_sim ) %]</td>
+                    <td>[% shorten( item.value.sell_price_sim ) %]</td>
+                    <td>[% item.value.sell_vol_sim %]</td>
+                    <td>[% shorten( item.value.repro_price ) %]</td>
+                [%   CASE 'batch' %]
+                    <td>[% item.value.buy_vol_sim %]</td>
+                    <td>[% shorten_and_multiply( item.value.buy_price_sim, item.quantity ) %]</td>
+                    <td>[% shorten_and_multiply( item.value.sell_price_sim, item.quantity ) %]</td>
+                    <td>[% item.value.sell_vol_sim %]</td>
+                    <td>[% shorten_and_multiply( item.value.repro_price, item.quantity ) %]</td>
+            [% END %]
+            <td>[% item.suggestion %]</td>
+            <td>[% item.value.margin_percentage %] %</td>
+            <td>[% item.value.margin_absolute %]</td>
+        [% ELSE %]
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        [% END %]
+        
+        
+    </tr>
+    [% IF item.contents %]
+        [% SET spacer = spacer + 1 %]
+        [% INCLUDE container_list.tmpl  contents = item.contents %]
+        [% SET spacer = spacer - 1 %]
+    [% END %]
+[% END %]

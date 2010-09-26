@@ -1,0 +1,47 @@
+[% WRAPPER wrapper.tmpl %]
+
+    <div class="main">
+        <h1>Eve Value Calculator</h1>
+        This website uses the Eve-Central daily CSV dumps and (once functional again), the Eve-Metrics webhook data to
+        calculate market prices of items. It provides an API which developers can use to look up item values.<br>
+        <br>
+        The API can be accessed under this url with a normal GET request:<br>
+        <a href="http://prices.eve-profits.com/item_data">http://prices.eve-profits.com/item_data</a><br>
+        <br>
+        The accepted parameters are as follows. All are optional and replaced with their defaults if omitted.<br>
+        <br>
+        <span class="parameter">id</span> - (default: "34")<br>
+        This parameter defines the item ids for which values are requested. It accepts a single value or multiple values
+        in a comma-seperated list, like this: "34, 35, 36"<br>
+        <br>
+        <span class="parameter">region</span> - (default: "empire")<br>
+        This parameter defines the regions from which prices are to be taken into consideration. It accepts either:
+        <ul>
+            <li>"all", which means all regions are taken into account
+            <li>"empire", which means only empire regions are taken into account
+            <li>a single region id, meaning only orders from that region are used
+            <li>a comma-seperated list of region ids
+        </ul>
+        <span class="parameter">mode</span> - (default: "sim")<br>
+        This parameter defines the mode that is used to calculate item values. It currently accepts 2 parameters: "sim" and "avg".
+        "sim" calculates item values by simulating a market volume transfer of x% of the cheapest sell orders and x% of the highest
+        buy orders. "avg" simply calculates the average of the entire market volume.<br>
+        <br>
+        <span class="parameter">extra</span> - (default: "5")<br>
+        This parameter defines an extra parameter which can be used as input for the different calculation modes. Currently
+        it's only use is to set the percentage of the market volume to be simulated for the "sim" mode. If the percentage
+        doesn't result in an integer it will be rounded up, so always at least one item is moved.<br>
+        <br>
+        <br>
+        <h3>Examples</h3>
+        Gallente Shuttles in Forge:<br>
+        <a href="http://prices.eve-profits.com/item_data?id=11129&region=10000002">http://prices.eve-profits.com/item_data?id=11129&region=10000002</a><br>
+        <br>
+        Average price of all Carrier skillbooks in Essence:<br>
+        <a href="http://prices.eve-profits.com/item_data?id=24311,24312,24313,24314&region=10000042">http://prices.eve-profits.com/item_data?id=24311,24312,24313,24314&region=10000042</a><br>
+        <br>
+        
+</div>
+
+
+[% END %]
