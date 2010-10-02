@@ -210,5 +210,16 @@ $(document).ready(function(){
             $("#help_link2").hide("slow");
         }
     );
-    
+
+    $("#region_links_link").toggle(
+        function(event) {
+            event.preventDefault();
+            $("#region_links").show("slow");
+        },
+        function(event) {
+            event.preventDefault();
+            $("#region_links").hide("slow");
+        }
+    );
+
 });

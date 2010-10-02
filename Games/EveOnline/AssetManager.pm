@@ -15,6 +15,13 @@ my %research_types = (
 my %cache;
 my %cfg;
 
+my @configured_regions = qw(
+    10000002 10000032 10000030 10000067
+    10000043 10000065 10000020 10000042 10000016 10000064 10000068
+);
+
+my %configured_regions = map { $_ => 1 } @configured_regions;
+
 sub setup {
     my ( $c ) = @_;
 
@@ -305,6 +312,7 @@ sub list : Runmode {
 
     for my $region ( @regions ) {
         $region->{select} = 'selected' if $c->{sess}{regions} =~ /$region->{regionid}/;
+        $region->{configured} = $configured_regions{$region->{regionid}} || 0;
     }
 
     my @sort_list = (
