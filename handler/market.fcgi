@@ -23,6 +23,8 @@ my $webapp = Games::EveOnline::MarketOrders->new(
 
 while (my $q = new CGI::Fast) {
     delete $webapp->{$_} for qw( __PRERUN_MODE  __CAP__SESSION_OBJ  sess  query_vars  __HEADER_PROPS );
+    $webapp->header_type('header');
+
     $webapp->query( $q );
     $webapp->run();
 }
