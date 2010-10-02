@@ -38,6 +38,11 @@ use Games::EveOnline::MarketOrders::Helpers qw(
     get_emo_status      get_work_lock       set_key_value
 );
 
+my @configured_regions = qw(
+    10000002 10000032 10000030 10000067
+    10000043 10000065 10000020 10000042 10000016 10000064 10000068
+);
+
 sub home : Default {
     my ( $c ) = @_;
 
@@ -123,7 +128,7 @@ sub perform_market_update : Runmode {
     $c->set_key_value( 'updater_status', 'working' );
 
     my $new_prices = 0;
-    $new_prices += $c->get_em_price_data( $_ ) for ( 10000002, 10000032 );
+    $new_prices += $c->get_em_price_data( $_ ) for @configured_regions;
 
     say "<br><br><br><br>UPDATE DONE!<br><br><br><br><br>";
     say "</span></body></html>";
@@ -154,7 +159,7 @@ sub perform_history_update : Runmode {
     $c->set_key_value( 'history_updater_status', 'working' );
 
     my $new_prices = 0;
-    $new_prices += $c->get_em_history_data( $_ ) for ( 10000002, 10000032 );
+    $new_prices += $c->get_em_history_data( $_ ) for @configured_regions;
 
     say "<br><br><br><br>UPDATE DONE!<br><br><br><br><br>";
     say "</span></body></html>";
