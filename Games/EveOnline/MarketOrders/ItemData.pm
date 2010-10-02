@@ -27,7 +27,7 @@ sub try_to_get_item_values {
     return $item_data if $item_data;
 
     return if !$no_value_item_list;
-    
+
     push @{$no_value_item_list}, $item_id;
     return;
 }
@@ -282,8 +282,6 @@ sub get_size_of_history_range {
     my $first_dt = string_to_dt( $last_date );
 
     my $days = $report_dt->delta_days( $first_dt )->{days} - 2;
-
-    die "Days managed to be 0 with type id '$report->{typeid}'." if !$days;
 
     $days = 90 if $days < 90;
 
