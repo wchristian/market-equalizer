@@ -183,13 +183,16 @@ Regions:
 </div>
 
 <center>
-    [% FOREACH region IN region_list %][% IF region.select %]<h1>[% region.regionname %]</h1>[% END %][% END %]
-    <a href="#" id="region_links_link">&#9660;</a>
+    <h1>
+        [% FOREACH region IN region_list %][% IF region.select %][% region.regionname %][% END %][% END %]
+        <a href="#" id="region_links_link">&#9660;</a>
+    </h1>
 
-    <div id="region_links" style="display:none;">
+    <div id="region_links" style="display:none;font-size:1.5em;width:35em;">
         [%- FOREACH region IN region_list %]
             [%- IF region.configured and !region.select %]
-                <h2><a href="?regions=[% region.regionid %]">[% region.regionname %]</a></h2>
+                <a href="?regions=[% region.regionid %]">[% region.regionname %]</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             [%- END %]
         [%- END %]
     </div>
