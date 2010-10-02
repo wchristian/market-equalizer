@@ -76,10 +76,6 @@ sub item_data : Runmode {
         push @output, $item_data;
     }
 
-    cluck "no output for:\n".Dumper( \@id_list, \%q) if !@output;
-
-    return if !@output;
-
     my $output =  to_json( \@output, { pretty => 1 } );
 
     cluck "no output for:\n".Dumper( \@id_list, \%q, \!@output) if !$output;
