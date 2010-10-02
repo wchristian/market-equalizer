@@ -18,22 +18,22 @@ function highlightTableRow()
         this.origCl = this.className;
     }
     this.className = arrayOfRolloverClasses[tableObj.id];
-    
+
     activeRow = this;
 }
 
 function clickOnTableRow()
 {
     var tableObj = this.parentNode;
-    if(tableObj.tagName!='TABLE')tableObj = tableObj.parentNode;		
-    
+    if(tableObj.tagName!='TABLE')tableObj = tableObj.parentNode;
+
     if(activeRowClickArray[tableObj.id] && this!=activeRowClickArray[tableObj.id]){
         activeRowClickArray[tableObj.id].className='';
     }
     this.className = arrayOfClickClasses[tableObj.id];
-    
+
     activeRowClickArray[tableObj.id] = this;
-    
+
 }
 
 function resetRowStyle()
@@ -43,25 +43,25 @@ function resetRowStyle()
 
     if(activeRowClickArray[tableObj.id] && this==activeRowClickArray[tableObj.id]){
         this.className = arrayOfClickClasses[tableObj.id];
-        return;	
+        return;
     }
-    
+
     var origCl = this.getAttribute('origCl');
     if(!origCl) origCl = this.origCl;
     this.className=origCl;
-    
+
 }
-    
+
 function addTableRolloverEffect(tableId,whichClass,whichClassOnClick)
 {
-    
+
     var ua = navigator.userAgent.toLowerCase();
 
     if ( ua.indexOf( "msie" ) != -1 ) return false;
-    
+
     arrayOfRolloverClasses[tableId] = whichClass;
     arrayOfClickClasses[tableId] = whichClassOnClick;
-    
+
     var tableObj = document.getElementById(tableId);
     var tBody = tableObj.getElementsByTagName('TBODY');
     if(tBody){
@@ -72,18 +72,18 @@ function addTableRolloverEffect(tableId,whichClass,whichClassOnClick)
     for(var no=0;no<rows.length;no++){
         rows[no].onmouseover = highlightTableRow;
         rows[no].onmouseout = resetRowStyle;
-        
+
         if(whichClassOnClick){
-            rows[no].onclick = clickOnTableRow;	
+            rows[no].onclick = clickOnTableRow;
         }
     }
-    
+
     return true;
 }
 
 (
     function($) {
-        
+
         $.extend({
             metadata : {
                 defaults : {
@@ -100,29 +100,29 @@ function addTableRolloverEffect(tableId,whichClass,whichClassOnClick)
                     var settings = $.extend({},this.defaults,opts);
                     // check for empty string in single property
                     if ( !settings.single.length ) settings.single = 'metadata';
-                    
+
                     var data = $.data(elem, settings.single);
                     // returned cached data if it already exists
                     if ( data ) return data;
-                    
+
                     data = "{}";
-                    
+
                     var getData = function(data) {
                         if(typeof data != "string") return data;
-                        
+
                         if( data.indexOf('{') < 0 ) {
                             data = eval("(" + data + ")");
                         }
                         return true;
                     }
-                    
+
                     var getObject = function(data) {
                       if(typeof data != "string") return data;
-                      
+
                       data = eval("(" + data + ")");
                       return data;
                     }
-                    
+
                     if ( settings.type == "html5" ) {
                         var object = {};
                         $( elem.attributes ).each(function() {
@@ -152,13 +152,13 @@ function addTableRolloverEffect(tableId,whichClass,whichClassOnClick)
                       }
                       object = getObject(data.indexOf("{") < 0 ? "{" + data + "}" : data);
                     }
-                    
+
                     $.data( elem, settings.single, object );
                     return object;
                 }
             }
         });
-        
+
         $.fn.metadata = function( opts ){
             return $.metadata.get( this[0], opts );
         };
@@ -172,23 +172,23 @@ function get_bom ( id ) {
         make_bom_dialog,
         "json"
     );
-    
+
     return false;
 }
 
 function make_bom_dialog ( data, textStatus, XMLHttpRequest ) {
-    
+
 	var template = $('#bom_template');
     var html = $( template ).bindTo( data );
     var dlg_params = { autoOpen: false, title: data.typename, width: '50em' };
-    
+
     var dialog = $('<div></div>').html( html ).dialog( dlg_params );
 
 	dialog.dialog('open');
-    
+
     var table = $( "#bom_table_"+data.typeid );
-    table.tablesorter(); 
-    
+    table.tablesorter();
+
     return true;
 }
 
