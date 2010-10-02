@@ -688,10 +688,7 @@ sub fill_missing_value_ids {
     my $json = $result->content;
     die "\n\nItem data request failed:\n\n $! \n\n $@ \n\n ".Dumper($result)." \n\n" if !$json;
 
-    my $json_ref;
-    eval {
-        $json_ref = from_json( $json );
-    };
+    my $json_ref = eval { from_json( $json ) };
     die "\n\nJSON Parsing Error:\n\n $! \n\n $@ \n\n $json \n\n" if $@;
 
     for ( @{ $json_ref } ) {
