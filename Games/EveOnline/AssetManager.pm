@@ -721,7 +721,7 @@ sub store_item_value_data {
 
     my $query = $c->def_pb->fetch( 'insert_item_value_data', { keys => $key_string, placeholders => $placeholder_string } );
 
-    $c->dbh->do($query, undef, @values );
+    eval { $c->dbh->do($query, undef, @values ) }; # TODO: find a way to avoid collisions here entirely
 
     return;
 }
