@@ -9,3 +9,6 @@ WebService
 /dom103-sqlite3-v1.db
 /dom103-sqlite3-v1.db.bz2
 /market.kpf
+*.komodoproject
+/config.ini
+/market_config.ini
