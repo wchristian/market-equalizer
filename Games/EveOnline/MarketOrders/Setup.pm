@@ -59,6 +59,8 @@ sub setup {
 sub cgiapp_postrun {
     my ( $c, $output_ref ) = @_;
 
+    return if $c->get_current_runmode eq 'check_old'; # this one may return empty
+
     cluck "no output for:\n".Dumper( $c ) if !$$output_ref;
 
     return;
