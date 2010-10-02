@@ -1,0 +1,6 @@
+MAILTO="mithaldu@yahoo.de"
+
+#        m      h       dom     mon     dow     command
+0,15,30,45      *       *       *       *       wget http://prices.eve-profits.com/perform_market_update
+         5      1       *       *       *       wget http://prices.eve-profits.com/perform_ec_update
+         5      0       *       *       *       wget http://prices.eve-profits.com/perform_history_update
