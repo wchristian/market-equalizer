@@ -296,7 +296,7 @@ sub list : Runmode {
         column_excess
     });
 
-    $c->{sess}{$_} =~ s/[^\d\.]//g for qw( broker_fee accounting minimum_margin );
+    $c->{sess}{$_} =~ s/[^-\d\.]//g for qw( broker_fee accounting minimum_margin );
 
     my @ids;
     push @ids, $c->query_vars->{id} if $c->query_vars->{id};
