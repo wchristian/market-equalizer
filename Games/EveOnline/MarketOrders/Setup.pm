@@ -57,9 +57,11 @@ sub setup {
 }
 
 sub cgiapp_postrun {
-    my ($self, $o) = @_;
-    
-    lint_html($o) if $ENV{CGI_APP_DEBUG};
+    my ( $c, $output_ref ) = @_;
+
+    cluck "no output for:\n".Dumper( $c ) if !$$output_ref;
+
+    return;
 }
 
 sub setup_tt {
