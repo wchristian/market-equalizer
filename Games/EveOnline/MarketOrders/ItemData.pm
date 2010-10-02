@@ -113,6 +113,7 @@ sub import_ec_orders {
 
         die "Market Order Input Error:\n\n$export->{content}\n\n" unless defined $order[bid] and ($order[bid] == 0 or $order[bid] == 1);
 
+        $order[duration] =~ s/:00:00:00.00//;
         $order[duration] =~ s/ days*, 0:00:00//;
         $order[issued] =~ s/\.\d+$//;
 
