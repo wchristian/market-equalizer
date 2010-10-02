@@ -59,7 +59,9 @@ sub setup {
 sub cgiapp_postrun {
     my ( $c, $output_ref ) = @_;
 
-    return if $c->get_current_runmode eq 'check_old'; # this one may return empty
+    my $rm = $c->get_current_runmode;
+    my @empty_allowed_rms = qw( perform_market_update check_old perform_ec_update perform_history_update );
+    return if grep { $_ eq $rm } @empty_allowed_rms;
 
     cluck "no output for:\n".Dumper( $c ) if !$$output_ref;
 
