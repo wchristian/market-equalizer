@@ -12,3 +12,7 @@ WebService
 *.komodoproject
 /config.ini
 /market_config.ini
+*.lock
+/ayurss
+/mithaldu
+munin*
