@@ -28,7 +28,8 @@ use Games::EveOnline::MarketOrders::ItemData qw(
     process_ec_export_orders                prepare_order_insert    get_item_value
     process_em_export_orders                calculate_item_value    import_ec_orders
     refresh_orders_for_item                 process_orders_sim      get_old_volume_data
-    fill_missing_value_data                 make_history_days_unique
+    fill_missing_value_data                 try_to_get_item_values
+    make_history_days_unique
 );
 use Games::EveOnline::MarketOrders::ReportInsert qw(
     finalize_old_batch      report_is_older_than_db     compare_report_size_with_db
@@ -37,6 +38,8 @@ use Games::EveOnline::MarketOrders::ReportInsert qw(
 use Games::EveOnline::MarketOrders::Helpers qw(
     get_emo_status      get_work_lock       set_key_value
 );
+
+use List::Util qw( shuffle );
 
 my @configured_regions = qw(
     10000002 10000032 10000030 10000067
@@ -53,31 +56,22 @@ sub home : Default {
 }
 
 sub item_data : Runmode {
-    my $c = shift;
+    my ( $c ) = @_;
 
     my %q = $c->query->Vars;
     $q{id} ||= '25910';
     $q{region} ||= 10000002;
 
-    my @output;
     my @id_list = split /,/, $q{id};
-    my $id_count = 0;
-    my $id_max = $#id_list;
-    for my $in_id ( @id_list ) {
-        $id_count++;
+    my $no_value_items = [];
 
-        my $item_data = $c->get_item_value( $in_id, $q{region}, 0 );
-        if( !$item_data->{id} ) {
-            $c->refresh_orders_for_item( $in_id, $q{region} );
-            $item_data = $c->get_item_value( $in_id, $q{region}, 0 );
-        }
-        next if !$item_data->{id};
+    my @output = map $c->try_to_get_item_values( $_, $q{region}, $no_value_items ), shuffle @id_list;
 
-        push @output, $item_data;
-    }
+    $c->refresh_orders_for_item( $_, $q{region} ) for shuffle @{$no_value_items};
+
+    push @output, map $c->try_to_get_item_values( $_, $q{region} ), shuffle @{$no_value_items};
 
     my $output =  to_json( \@output, { pretty => 1 } );
-
     cluck "no output for:\n".Dumper( \@id_list, \%q, \!@output) if !$output;
 
     return $output;

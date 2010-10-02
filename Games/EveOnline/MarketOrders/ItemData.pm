@@ -15,10 +15,22 @@ our @EXPORT_OK = qw(
     process_ec_export_orders                prepare_order_insert    get_item_value
     process_em_export_orders                calculate_item_value    import_ec_orders
     refresh_orders_for_item                 process_orders_sim      get_old_volume_data
-    fill_missing_value_data                 make_history_days_unique
+    fill_missing_value_data                 try_to_get_item_values
+    make_history_days_unique
 );
 
 
+sub try_to_get_item_values {
+    my ( $c, $item_id, $region_id, $no_value_item_list ) = @_;
+
+    my $item_data = $c->get_item_value( $item_id, $region_id, 0 );
+    return $item_data if $item_data;
+
+    return if !$no_value_item_list;
+    
+    push @{$no_value_item_list}, $item_id;
+    return;
+}
 
 sub get_item_value {
     my ($c, $id, $region, $old ) = @_;
