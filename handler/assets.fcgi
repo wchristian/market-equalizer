@@ -21,12 +21,9 @@ my $webapp = Games::EveOnline::AssetManager->new(
     }
 );
 
-while (1) {
-    my $q = CGI::Fast->new;
-    last if !$q;
+while (my $q = new CGI::Fast) {
     delete $webapp->{$_} for qw( __PRERUN_MODE  __CAP__SESSION_OBJ  sess  query_vars  __HEADER_PROPS );
     $webapp->query( $q );
-    $DB::single=1 if $q->{param}{debug};
     $webapp->run();
 }
 

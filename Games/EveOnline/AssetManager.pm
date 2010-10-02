@@ -293,7 +293,6 @@ sub list : Runmode {
 
     my @ids;
     push @ids, $c->query_vars->{id} if $c->query_vars->{id};
-    @ids = ( 27678 ) if !@ids;
 
     my $assets = $c->get_asset_list( @ids );
 
