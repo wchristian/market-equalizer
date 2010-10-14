@@ -387,6 +387,8 @@ sub get_region_list {
         $_->{path_name} = $_->{regionname};
         $_->{path_name} =~ s/ /_/g;
         $_->{configured} = $configured_regions{$_->{regionid}} || 0;
+        $_->{regionname_html} = $_->{regionname};
+        $_->{regionname_html} =~ s/ /&nbsp;/g for @regions;
     }
 
     $c->{cache}{regions} = \@regions;

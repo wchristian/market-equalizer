@@ -8,7 +8,7 @@
     <div id="region_links" style="font-size:1.5em;width:20em;">
         [%- FOREACH region IN region_list %]
             [%- IF region.configured %]
-                <a href="/list/[% region.path_name %]">[% region.regionname %]</a>
+                <a href="/list/[% region.path_name %]">[% region.regionname_html %]</a>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             [%- END %]
         [%- END %]
