@@ -286,8 +286,8 @@ sub owned_data {
     };
 }
 
-sub list : Runmode {
-    my $c = shift;
+sub list : Path(list/) {
+    my ( $c ) = @_;
 
     $c->update_session( qw {
         container_sort_method_1     minimum_margin  accounting      broker_fee
@@ -298,17 +298,17 @@ sub list : Runmode {
 
     $c->{sess}{$_} =~ s/[^-\d\.]//g for qw( broker_fee accounting minimum_margin );
 
+    my( $region_name ) = $c->action_args;
+    my @regions = @{ $c->get_region_list };
+    my ( $requested_region ) = grep { $_->{path_name} eq $region_name } @regions;
+    $c->{sess}{regions} = $requested_region->{regionid} if $requested_region;
+
     my @ids;
     push @ids, $c->query_vars->{id} if $c->query_vars->{id};
 
     my $assets = $c->get_asset_list( @ids );
 
     my $time;# = get_asset_update_time();
-
-    my @regions = values %{ $c->get_list( 'region_list', 'regionid' ) };
-    @regions = sort { $a->{regionname} cmp $b->{regionname} } @regions;
-    unshift @regions, { regionid => 'empire', regionname => 'Only Empire' };
-    unshift @regions, { regionid => 'all', regionname => 'All Regions' };
 
     for my $region ( @regions ) {
         $region->{select} = 'selected' if $c->{sess}{regions} =~ /$region->{regionid}/;
@@ -352,6 +352,24 @@ sub list : Runmode {
     );
 
     return $c->tt_process( \%params );
+}
+
+sub get_region_list {
+    my ( $c ) = @_;
+
+    return clone $c->{cache}{regions} if $c->{cache}{regions};
+
+    my @regions = values %{ $c->get_list( 'region_list', 'regionid' ) };
+    @regions = sort { $a->{regionname} cmp $b->{regionname} } @regions;
+
+    for ( @regions ) {
+        $_->{path_name} = $_->{regionname};
+        $_->{path_name} =~ s/ /_/g;
+    }
+
+    $c->{cache}{regions} = \@regions;
+
+    return clone $c->{cache}{regions};
 }
 
 sub item : Runmode {
