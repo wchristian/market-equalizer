@@ -318,6 +318,7 @@ sub list : Path(list/) {
     $c->{sess}{$_} =~ s/[^-\d\.]//g for qw( broker_fee accounting minimum_margin );
 
     my( $region_name ) = $c->action_args;
+    $region_name ||= '';
     my @regions = @{ $c->get_region_list };
     my ( $requested_region ) = grep { $_->{path_name} eq $region_name } @regions;
     $c->{sess}{regions} = $requested_region->{regionid} if $requested_region;
