@@ -184,8 +184,7 @@ Regions:
     <div id="region_links" style="display:none;font-size:1.5em;width:35em;">
         [%- FOREACH region IN region_list %]
             [%- IF region.configured and !region.select %]
-                <a href="/list/[% region.path_name %]">[% region.regionname_html %]</a>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a style="margin-left:2em;margin-right:2em;" href="/list/[% region.path_name %]">[% region.regionname_html %]</a>
             [%- END %]
         [%- END %]
         <br /><br />
