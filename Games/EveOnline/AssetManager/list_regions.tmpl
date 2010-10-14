@@ -5,10 +5,12 @@
     <h1>Where do you want to build today?</h1>
     <br />
     <br />
-    <div style="font-size:1.5em;width:20em;">
+    <div id="region_links" style="font-size:1.5em;width:20em;">
         [%- FOREACH region IN region_list %]
+            [%- IF region.configured %]
                 <a href="/list/[% region.path_name %]">[% region.regionname %]</a>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            [%- END %]
         [%- END %]
         <br /><br />
     </div>

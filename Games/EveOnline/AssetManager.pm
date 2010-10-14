@@ -334,7 +334,6 @@ sub list : Path(list/) {
 
     for my $region ( @regions ) {
         $region->{select} = 'selected' if $c->{sess}{regions} =~ /$region->{regionid}/;
-        $region->{configured} = $configured_regions{$region->{regionid}} || 0;
     }
 
     my @sort_list = (
@@ -387,6 +386,7 @@ sub get_region_list {
     for ( @regions ) {
         $_->{path_name} = $_->{regionname};
         $_->{path_name} =~ s/ /_/g;
+        $_->{configured} = $configured_regions{$_->{regionid}} || 0;
     }
 
     $c->{cache}{regions} = \@regions;
