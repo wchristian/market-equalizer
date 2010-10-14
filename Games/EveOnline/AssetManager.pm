@@ -4,6 +4,8 @@ use base 'Games::EveOnline::AssetManager::CABase';
 $|=1;
 use Games::EveOnline::AssetManager::Tools;
 
+use List::Util qw( shuffle );
+
 memoize( 'expiry_to_timestamp' );
 
 my %research_types = (
@@ -292,7 +294,7 @@ sub list_regions : Runmode {
     my %times = $c->get_price_update_times;
     my $emo_status = $c->get_emo_status;
 
-    my @regions = @{ $c->get_region_list };
+    my @regions = shuffle @{ $c->get_region_list };
 
     my %params = (
         region_list => \@regions,
