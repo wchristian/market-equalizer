@@ -68,6 +68,7 @@ sub setup {
 
     $c->run_modes({
         'login'  => 'login',
+        'list_regions'  => 'list_regions',
     });
 
     return;
@@ -286,13 +287,29 @@ sub owned_data {
     };
 }
 
+sub list_regions : Runmode {
+    my ( $c ) = @_;
+    my %times = $c->get_price_update_times;
+    my $emo_status = $c->get_emo_status;
+
+    my @regions = @{ $c->get_region_list };
+
+    my %params = (
+        region_list => \@regions,
+        emo_status => $emo_status,
+        %times,
+    );
+
+    return $c->tt_process( \%params );
+}
+
 sub list : Path(list/) {
     my ( $c ) = @_;
 
     $c->update_session( qw {
         container_sort_method_1     minimum_margin  accounting      broker_fee
         production_slots            minimum_profit  maximum_roi     owner
-        industry_skill              prod_eff_level  bp_mat_level    regions
+        industry_skill              prod_eff_level  bp_mat_level
         column_excess
     });
 
@@ -302,6 +319,8 @@ sub list : Path(list/) {
     my @regions = @{ $c->get_region_list };
     my ( $requested_region ) = grep { $_->{path_name} eq $region_name } @regions;
     $c->{sess}{regions} = $requested_region->{regionid} if $requested_region;
+
+    return $c->forward( 'list_regions' ) if !$requested_region;
 
     my @ids;
     push @ids, $c->query_vars->{id} if $c->query_vars->{id};
