@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <!DOCTYPE phrasebook [
-          <!ELEMENT phrasebook (dictionary)*>              
+          <!ELEMENT phrasebook (dictionary)*>
           <!ELEMENT dictionary (phrase)*>
               <!ATTLIST dictionary name CDATA #REQUIRED>
               <!ELEMENT phrase (#PCDATA)>
               <!ATTLIST phrase name CDATA #REQUIRED>
 ]>
- 
+
 <phrasebook>
     <dictionary name="tables">
         <phrase name="init_tables_dic">select table_name from information_schema.tables where table_name = ?</phrase>
-        
+
         <phrase name="eaa_cache_named">
             CREATE TABLE eaa_cache_named (
                 id SERIAL PRIMARY KEY,
@@ -18,7 +18,7 @@
                 "content" BYTEA NOT NULL
             );
         </phrase>
-        
+
         <phrase name="eaa_item_value_cache">
             CREATE TABLE eaa_item_value_cache (
                 id SERIAL PRIMARY KEY,
@@ -33,14 +33,14 @@
                 move DOUBLE PRECISION NOT NULL DEFAULT '-1'
             );
         </phrase>
-        
+
         <phrase name="eaa_sessions">
             CREATE TABLE eaa_sessions (
                 id CHAR(32) NOT NULL PRIMARY KEY,
                 a_session BYTEA NOT NULL
             );
         </phrase>
-        
+
         <phrase name="eaa_users">
             CREATE TABLE eaa_users (
                 id SERIAL PRIMARY KEY,
@@ -48,7 +48,7 @@
                 password VARCHAR(14) NOT NULL
             );
         </phrase>
-        
+
         <phrase name="emo_key_value_store">
             CREATE TABLE emo_key_value_store (
                 id SERIAL PRIMARY KEY,
@@ -56,7 +56,21 @@
                 value BYTEA
             );
         </phrase>
-        
-        
+
+        <phrase name="eaa_profile_log">
+            CREATE TABLE eaa_profile_log (
+                "id" SERIAL PRIMARY KEY,
+                "log_time" INTEGER,
+                "guid" VARCHAR(100),
+                "program" VARCHAR(300),
+                "in_out" VARCHAR(5),
+                "path_info" VARCHAR(300),
+                "mem_change" INTEGER,
+                "duration" DOUBLE PRECISION,
+                "query_data" bytea
+            );
+        </phrase>
+
+
     </dictionary>
 </phrasebook>

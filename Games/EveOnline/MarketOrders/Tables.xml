@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <!DOCTYPE phrasebook [
-          <!ELEMENT phrasebook (dictionary)*>              
+          <!ELEMENT phrasebook (dictionary)*>
           <!ELEMENT dictionary (phrase)*>
               <!ATTLIST dictionary name CDATA #REQUIRED>
               <!ELEMENT phrase (#PCDATA)>
               <!ATTLIST phrase name CDATA #REQUIRED>
 ]>
- 
+
 <phrasebook>
     <dictionary name="tables">
         <phrase name="init_tables_dic">select table_name from information_schema.tables where table_name = ?</phrase>
-        
+
         <phrase name="emo_item_orders">
             CREATE TABLE emo_item_orders (
                 typeid INTEGER NOT NULL,
@@ -24,7 +24,7 @@
                 price DOUBLE PRECISION NOT NULL
             );
         </phrase>
-        
+
         <phrase name="emo_item_value_cache">
             CREATE TABLE emo_item_value_cache (
                 id SERIAL PRIMARY KEY,
@@ -39,7 +39,7 @@
                 move DOUBLE PRECISION NOT NULL DEFAULT '-1'
             );
         </phrase>
-        
+
         <phrase name="emo_exports">
             CREATE TABLE emo_exports (
                 typeid INTEGER NOT NULL,
@@ -51,15 +51,15 @@
                 PRIMARY KEY( typeid, regionid, "source" )
             );
         </phrase>
-        
+
                <!--      <phrase name="indexes">
             CREATE INDEX IF NOT EXISTS "eaa_get_order_list" ON "eaa_item_orders" ("typeid" ASC, "type_sell" ASC, "region" ASC, "price" DESC);
             CREATE INDEX IF NOT EXISTS "eaa_get_order_list_2" ON "eaa_item_orders" ("typeid" ASC, "type_sell" ASC, "region" ASC);
             CREATE INDEX IF NOT EXISTS "eaa_get_order_list_3" ON "eaa_item_orders" ("typeid" ASC, "type_sell" ASC);
             CREATE INDEX IF NOT EXISTS "eaa_get_order_list_4" ON "eaa_item_orders" ("typeid" ASC);
-            CREATE INDEX IF NOT EXISTS "eaa_get_order_list_5" ON "eaa_item_orders" ("price" DESC); 
+            CREATE INDEX IF NOT EXISTS "eaa_get_order_list_5" ON "eaa_item_orders" ("price" DESC);
         </phrase>-->
-        
+
         <phrase name="emo_key_value_store">
             CREATE TABLE eaa_item_value_cache (
                 id SERIAL PRIMARY KEY,
@@ -67,19 +67,33 @@
                 value BYTEA
             );
         </phrase>
-        
+
         <phrase name="eaa_sessions">
             CREATE TABLE eaa_sessions (
                 id CHAR(32) NOT NULL PRIMARY KEY,
                 a_session BYTEA NOT NULL
             );
         </phrase>
-        
+
         <phrase name="emo_utc_timestamp">
             CREATE OR REPLACE FUNCTION UTC_TIMESTAMP() RETURNS timestamp AS $$
             SELECT current_timestamp at time zone 'utc';
             $$ LANGUAGE SQL;
         </phrase>
-        
+
+        <phrase name="emo_profile_log">
+            CREATE TABLE emo_profile_log (
+                "id" SERIAL PRIMARY KEY,
+                "log_time" INTEGER,
+                "guid" VARCHAR(100),
+                "program" VARCHAR(300),
+                "in_out" VARCHAR(5),
+                "path_info" VARCHAR(300),
+                "mem_change" INTEGER,
+                "duration" DOUBLE PRECISION,
+                "query_data" bytea
+            );
+        </phrase>
+
     </dictionary>
 </phrasebook>
