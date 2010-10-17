@@ -763,8 +763,10 @@ sub store_item_value_data {
 
     my $query = $c->def_pb->fetch( 'insert_item_value_data', { keys => $key_string, placeholders => $placeholder_string } );
 
-    eval { $c->dbh->do($query, undef, @values ) }; # TODO: find a way to avoid collisions here entirely
+    my $exists = $c->dbh->selectrow_array( "SELECT id FROM eaa_item_value_cache WHERE id = ?", undef, $value_data->{id} );
+    return if $exists;
 
+    eval { $c->dbh->do($query, undef, @values ) }; # TODO: find a way to avoid collisions here entirely
     return;
 }
 
