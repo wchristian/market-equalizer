@@ -167,7 +167,7 @@ function addTableRolloverEffect(tableId,whichClass,whichClassOnClick)
 
 function get_bom ( id ) {
     $.post(
-        "item",
+        "/item",
         { type_id : id },
         make_bom_dialog,
         "json"
