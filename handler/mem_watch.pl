@@ -30,7 +30,7 @@ sub split_by_path {
 
     my %paths;
     for ( @{$set->{rows}} ) {
-        $_->{path_info} =~ s:^/list/[\w-]+:/list/\<region\>:;
+        $_->{path_info} =~ s:^/list/[\w-]+:/list/region_name:;
         my $path = $paths{$_->{path_info}} ||= {};
         $path->{size} ||= 0;
         $path->{name} = $_->{path_info};
