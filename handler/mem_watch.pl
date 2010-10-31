@@ -83,7 +83,7 @@ sub page {
     <title>Memory Progression Charts</title>
     <script type="text/javascript" src="protovis-r3.2.js"></script>
 
-    <script type="text/javascript">
+    <script type="text/javascript+protovis">
         function stack( data, start, end, min, max ) {
 
             var w = 400,
