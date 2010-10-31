@@ -405,6 +405,7 @@ sub get_region_list {
         $_->{configured} = $configured_regions{$_->{regionid}} || 0;
         $_->{regionname_html} = $_->{regionname};
         $_->{regionname_html} =~ s/ /&nbsp;/g;
+        $_->{regionname_html} =~ s/-/&#8209;/g;
     }
 
     $c->{cache}{regions} = \@regions;
