@@ -213,7 +213,7 @@ sub page {
                 .width(w)
                 .height(h)
                 .bottom(20)
-                .left(20)
+                .left(30)
                 .right(10)
                 .top(5);
 
@@ -257,6 +257,19 @@ sub page {
                     .strokeStyle(pv.color(line.color))
                     .lineWidth(2);
             }
+
+            vis.add(pv.Label)
+                .text("time")
+                .bottom(-20)
+                .left(200)
+                .textAlign("center");
+
+            vis.add(pv.Label)
+                .text("mem change in MB")
+                .bottom(50)
+                .left(-20)
+                .textAlign("center")
+                .textAngle(Math.PI*1.5);
 
             vis.render();
         }
