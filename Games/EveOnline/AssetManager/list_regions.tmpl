@@ -5,13 +5,16 @@
     <h1>Where do you want to build today?</h1>
     <br />
     <br />
-    <div id="region_links" style="font-size:1.5em;width:20em;">
+    <div id="region_links" style="font-size:1.5em;width:30em;">
         [%- FOREACH region IN region_list %]
             [%- IF region.configured %]
-                <a style="margin-left:2em;margin-right:2em;" href="/list/[% region.path_name %]">[% region.regionname_html %]</a>
+                <span style="margin-left:2em;margin-right:2em;"><a href="/list/[% region.path_name %]">[% region.regionname_html %]</a><span style="font-size:0.6em;">&nbsp;([% region.competition %])</span></span>
             [%- END %]
         [%- END %]
         <br /><br />
+    </div>
+    <div style="width:20em;">
+        Numbers in parens denote competition level. The higher it is, the more interest there is in that region.
     </div>
     <br />
 </center>

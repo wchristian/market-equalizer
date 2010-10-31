@@ -296,6 +296,22 @@ sub list_regions : Runmode {
 
     my @regions = shuffle @{ $c->get_region_list };
 
+    my $week_ago = time - 604800;
+    my $hit_count = $c->dbh->selectall_hashref(
+        "SELECT count(path_info) as count, path_info FROM eaa_profile_log WHERE log_time > ? AND path_info LIKE '/list/%' GROUP BY path_info",
+        'path_info', undef, $week_ago
+    );
+
+    my $all_hits = 0;
+    $all_hits += $_->{count} for values %{$hit_count};
+
+    for ( @regions ) {
+        next if !$_->{configured};
+        my $key = "/list/$_->{path_name}";
+        my $hits = $hit_count->{$key}{count};
+        $_->{competition} = sprintf "%.2f", 100 * $hits / $all_hits;
+    }
+
     my %params = (
         region_list => \@regions,
         emo_status => $emo_status,
