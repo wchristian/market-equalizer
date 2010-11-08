@@ -306,6 +306,7 @@ sub list_regions : Runmode {
         my $value = $c->get_latest_region_value( $_->{regionid} );
         $value = isk_shorten( $value ) if $value;
         $_->{value} = $value || '?';
+        $_->{value} =~ s/\.\d+//;
     }
 
     my %params = (
