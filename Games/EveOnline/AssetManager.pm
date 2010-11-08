@@ -304,6 +304,7 @@ sub list_regions : Runmode {
 
     my $all_hits = 0;
     $all_hits += $_->{count} for values %{$hit_count};
+    $all_hits ||= 1;
 
     for ( @regions ) {
         next if !$_->{configured};
@@ -396,7 +397,7 @@ sub list : Path(list/) {
 sub record_region_value {
     my ( $c, $assets, $requested_region ) = @_;
 
-    my %cfg = %{$c->{cfg}};
+    my %cfg = %{$c->{sess}};
     return if $cfg{accounting} != 3;
     return if $cfg{industry_skill} != 5;
     return if $cfg{prod_eff_level} != 5;
