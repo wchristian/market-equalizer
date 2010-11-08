@@ -406,6 +406,7 @@ sub get_region_list {
         $_->{regionname_html} = $_->{regionname};
         $_->{regionname_html} =~ s/ /&nbsp;/g;
         $_->{regionname_html} =~ s/-/&#8209;/g;
+
     }
 
     $c->{cache}{regions} = \@regions;
@@ -884,13 +885,9 @@ sub calculate_manufacture_prices {
     my $value = $asset->{value};
 
     if ( $asset->{bom} and !$value->{manuf_cost} ) {
-        #$asset->{mat_avail} = 999_999_999_999;
         for my $component ( values %{ $asset->{bom} } ) {
             $component->{value}{sell_price} = 999999999 if !$component->{value}{sell_price};
             $value->{manuf_cost} += $component->{value}{sell_price};
-
-            #$component->{availability} = $component->{value}{sell_vol} / $component->{quantity};
-            #$asset->{mat_avail} = $component->{availability} if $component->{availability} < $asset->{mat_avail};
         }
     }
     else {
@@ -937,7 +934,6 @@ sub calculate_item_profits {
         $asset->{real_sales} = $asset->{sales_guess} if $asset->{sales_guess} and $asset->{sales_guess} < $asset->{real_sales};
     }
 
-
     $asset->{unit_profit} =
         $asset->{value}{sell_price}
         - $asset->{value}{manuf_cost}
@@ -970,8 +966,6 @@ sub calculate_item_profits {
     $asset->{unit_profit_mult} = 1.2 * $asset->{real_unit_profit_mult};
 
     $asset->{unit_profit_mult} = 1 if $asset->{unit_profit_mult} > 1;
-
-    #$asset->{prod_avail} = $asset->{mat_avail} / $asset->{real_sales};
 
     return;
 }
