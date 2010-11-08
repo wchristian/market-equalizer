@@ -916,8 +916,6 @@ sub calculate_item_profits {
 
     my $value = $asset->{value};
 
-    $value->{$_} /= $asset->{quantity} for qw/ buy_price manuf_cost sell_price /;
-
     $asset->{value}{sell_price} ||= ( $asset->{value}{manuf_cost} * 1.5 );
 
     $asset->{prod_per_day} = $c->get_prod_per_day( $asset );
