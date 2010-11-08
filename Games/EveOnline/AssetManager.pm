@@ -294,18 +294,9 @@ sub list_regions : Runmode {
     my %times = $c->get_price_update_times;
     my $emo_status = $c->get_emo_status;
 
+    my ( $hit_count, $all_hits ) = $c->get_hit_data;
+
     my @regions = shuffle @{ $c->get_region_list };
-
-    my $week_ago = time - 604800;
-    my $hit_count = $c->dbh->selectall_hashref(
-        "SELECT count(path_info) as count, path_info FROM eaa_profile_log WHERE log_time > ? AND path_info LIKE '/list/%' GROUP BY path_info",
-        'path_info', undef, $week_ago
-    );
-
-    my $all_hits = 0;
-    $all_hits += $_->{count} for values %{$hit_count};
-    $all_hits ||= 1;
-
     for ( @regions ) {
         next if !$_->{configured};
         my $key = "/list/$_->{path_name}";
@@ -324,6 +315,22 @@ sub list_regions : Runmode {
     );
 
     return $c->tt_process( \%params );
+}
+
+sub get_hit_data {
+    my ( $c ) = @_;
+
+    my $week_ago = time - 604800;
+    my $hit_count = $c->dbh->selectall_hashref(
+        "SELECT count(path_info) as count, path_info FROM eaa_profile_log WHERE log_time > ? AND path_info LIKE '/list/%' GROUP BY path_info",
+        'path_info', undef, $week_ago
+    );
+
+    my $all_hits = 0;
+    $all_hits += $_->{count} for values %{$hit_count};
+    $all_hits ||= 1;
+
+    return ( $hit_count, $all_hits );
 }
 
 sub list : Path(list/) {
@@ -419,10 +426,24 @@ sub record_region_value {
 
     return if defined $old_value and defined $value and $old_value eq $value;
 
-    my $query = "INSERT INTO eaa_region_value ( regionid, value, created ) VALUES ( ?, ?, UTC_TIMESTAMP())";
-    $c->dbh->do($query, undef, $requested_region->{regionid}, $value );
+    my $competition = $c->get_region_competition( $requested_region );
+
+    my $query = "INSERT INTO eaa_region_value ( regionid, value, competition, created ) VALUES ( ?, ?, ?, UTC_TIMESTAMP())";
+    $c->dbh->do($query, undef, $requested_region->{regionid}, $value, $competition );
 
     return;
+}
+
+sub get_region_competition {
+    my ( $c, $region ) = @_;
+
+    my ( $hit_count, $all_hits ) = $c->get_hit_data;
+
+    my $key = "/list/$region->{path_name}";
+    my $hits = $hit_count->{$key}{count};
+    my $competition = sprintf "%.2f", 100 * $hits / $all_hits;
+
+    return $competition;
 }
 
 sub get_latest_region_value {

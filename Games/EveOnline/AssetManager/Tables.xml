@@ -75,6 +75,7 @@
             CREATE TABLE eaa_region_value (
                 "id" SERIAL PRIMARY KEY,
                 "regionid" INTEGER,
+                "competition" DOUBLE PRECISION,
                 "value" DOUBLE PRECISION,
                 created TIMESTAMP WITHOUT TIME ZONE NOT NULL
             );
