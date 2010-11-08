@@ -4,7 +4,7 @@ use base 'Games::EveOnline::AssetManager::CABase';
 $|=1;
 use Games::EveOnline::AssetManager::Tools;
 
-use List::Util qw( shuffle );
+use List::Util qw( shuffle reduce );
 
 memoize( 'expiry_to_timestamp' );
 
@@ -346,6 +346,8 @@ sub list : Path(list/) {
 
     my $assets = $c->get_asset_list( @ids );
 
+    $c->record_region_value( $assets, $requested_region );
+
     my $time;# = get_asset_update_time();
 
     for my $region ( @regions ) {
@@ -391,6 +393,42 @@ sub list : Path(list/) {
     return $c->tt_process( \%params );
 }
 
+sub record_region_value {
+    my ( $c, $assets, $requested_region ) = @_;
+
+    my %cfg = %{$c->{cfg}};
+    return if $cfg{accounting} != 3;
+    return if $cfg{industry_skill} != 5;
+    return if $cfg{prod_eff_level} != 5;
+    return if $cfg{broker_fee} != 0.39;
+    return if $cfg{production_slots} != 1;
+    return if $cfg{bp_mat_level} != 0;
+    return if $cfg{minimum_profit} != 1500000;
+    return if $cfg{maximum_roi} != 365;
+    return if $cfg{minimum_margin} != 0;
+
+    my @items = @{ $assets->[0]{contents} };
+
+    my $value = reduce { $a + $b->{daily_profit_num} } 0, @items;
+    my $old_value = $c->get_latest_region_value( $requested_region->{regionid} );
+
+    return if defined $old_value and defined $value and $old_value eq $value;
+
+    my $query = "INSERT INTO eaa_region_value ( regionid, value, created ) VALUES ( ?, ?, UTC_TIMESTAMP())";
+    $c->dbh->do($query, undef, $requested_region->{regionid}, $value );
+
+    return;
+}
+
+sub get_latest_region_value {
+    my ( $c, $regionid ) = @_;
+
+    my $query = "SELECT value FROM eaa_region_value WHERE regionid = ? ORDER BY created DESC LIMIT 1";
+    my $value = $c->dbh->selectrow_array( $query, undef, $regionid );
+
+    return $value;
+}
+
 sub get_region_list {
     my ( $c ) = @_;
 
@@ -407,6 +445,9 @@ sub get_region_list {
         $_->{regionname_html} =~ s/ /&nbsp;/g;
         $_->{regionname_html} =~ s/-/&#8209;/g;
 
+        my $value = $c->get_latest_region_value( $_->{regionid} );
+        $value = isk_shorten( $value ) if $value;
+        $_->{value} = $value || '?';
     }
 
     $c->{cache}{regions} = \@regions;
@@ -995,6 +1036,7 @@ sub prettify_asset {
     $item->{value}{buy_vol} = '' if $item->{value}{buy_vol} <= 0;
     $item->{value}{sell_vol} = '' if $item->{value}{sell_vol} <= 0;
 
+    $item->{daily_profit_num} = $item->{daily_profit};
     $item->{daily_profit} = isk_shorten( $item->{daily_profit} );
     $item->{unit_profit_green} = trunc( 255 * $item->{unit_profit_mult} );
     $item->{excess_green} = trunc( $c->get_production_green( $item ) );

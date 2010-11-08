@@ -8,13 +8,15 @@
     <div id="region_links" style="font-size:1.5em;width:30em;">
         [%- FOREACH region IN region_list %]
             [%- IF region.configured %]
-                <span style="margin-left:2em;margin-right:2em;"><a href="/list/[% region.path_name %]">[% region.regionname_html %]</a><span style="font-size:0.6em;">&nbsp;([% region.competition %])</span></span>
+                <span style="margin-left:2em;margin-right:2em;"><a href="/list/[% region.path_name %]">[% region.regionname_html %]</a><span style="font-size:0.6em;">&nbsp;([% region.competition %], [% region.value %])</span></span>
             [%- END %]
         [%- END %]
         <br /><br />
     </div>
     <div style="width:20em;">
-        Numbers in parens denote competition level. The higher it is, the more interest there is in that region.
+        Numbers in parens denote competition level and possible profit value.<br />
+        Competition: The higher it is, the more interest there is in that region. Maximum interest is 100, minumum is 0.<br />
+        Value: Sum of the possible daily profits for all visible items in the region, assuming default settings. Updated whenever a region page is loaded with default settings.
     </div>
     <br />
 </center>

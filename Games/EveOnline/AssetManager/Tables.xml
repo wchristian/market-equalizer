@@ -71,6 +71,15 @@
             );
         </phrase>
 
+        <phrase name="eaa_region_value">
+            CREATE TABLE eaa_region_value (
+                "id" SERIAL PRIMARY KEY,
+                "regionid" INTEGER,
+                "value" DOUBLE PRECISION,
+                created TIMESTAMP WITHOUT TIME ZONE NOT NULL
+            );
+        </phrase>
+
 
     </dictionary>
 </phrasebook>
