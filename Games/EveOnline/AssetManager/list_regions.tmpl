@@ -8,7 +8,7 @@
     <div id="region_links" style="font-size:1.5em;width:30em;">
         [%- FOREACH region IN region_list %]
             [%- IF region.configured %]
-                <span style="margin-left:2em;margin-right:2em;"><a href="/list/[% region.path_name %]">[% region.regionname_html %]</a><span style="font-size:0.6em;">&nbsp;([% region.competition %], [% region.value %])</span></span>
+                <span style="margin-left:2em;margin-right:2em;"><a href="/list/[% region.path_name %]">[% region.regionname_html %]</a><span style="font-size:0.6em;">&nbsp;([% region.competition %],&nbsp;[% region.value %])</span></span>
             [%- END %]
         [%- END %]
         <br /><br />
