@@ -311,6 +311,10 @@ sub list_regions : Runmode {
         my $key = "/list/$_->{path_name}";
         my $hits = $hit_count->{$key}{count};
         $_->{competition} = sprintf "%.2f", 100 * $hits / $all_hits;
+
+        my $value = $c->get_latest_region_value( $_->{regionid} );
+        $value = isk_shorten( $value ) if $value;
+        $_->{value} = $value || '?';
     }
 
     my %params = (
@@ -445,10 +449,6 @@ sub get_region_list {
         $_->{regionname_html} = $_->{regionname};
         $_->{regionname_html} =~ s/ /&nbsp;/g;
         $_->{regionname_html} =~ s/-/&#8209;/g;
-
-        my $value = $c->get_latest_region_value( $_->{regionid} );
-        $value = isk_shorten( $value ) if $value;
-        $_->{value} = $value || '?';
     }
 
     $c->{cache}{regions} = \@regions;
