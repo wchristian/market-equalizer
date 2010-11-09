@@ -77,7 +77,8 @@
                 "regionid" INTEGER,
                 "competition" DOUBLE PRECISION,
                 "value" DOUBLE PRECISION,
-                created TIMESTAMP WITHOUT TIME ZONE NOT NULL
+                created TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+                timestamp INTEGER
             );
         </phrase>
 

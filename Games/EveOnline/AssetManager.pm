@@ -429,8 +429,8 @@ sub record_region_value {
 
     my $competition = $c->get_region_competition( $requested_region );
 
-    my $query = "INSERT INTO eaa_region_value ( regionid, value, competition, created ) VALUES ( ?, ?, ?, UTC_TIMESTAMP())";
-    $c->dbh->do($query, undef, $requested_region->{regionid}, $value, $competition );
+    my $query = "INSERT INTO eaa_region_value ( regionid, value, competition, created, timestamp ) VALUES ( ?, ?, ?, UTC_TIMESTAMP(), ? )";
+    $c->dbh->do($query, undef, $requested_region->{regionid}, $value, $competition, time );
 
     return;
 }
