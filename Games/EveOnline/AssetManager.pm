@@ -301,7 +301,7 @@ sub list_regions : Runmode {
     for ( @regions ) {
         next if !$_->{configured};
         my $key = "/list/$_->{path_name}";
-        my $hits = $hit_count->{$key}{count};
+        my $hits = $hit_count->{$key}{count} || 0;
         $_->{competition} = sprintf "%.2f", 100 * $hits / $all_hits;
 
         my $value = $c->get_latest_region_value( $_->{regionid} );
