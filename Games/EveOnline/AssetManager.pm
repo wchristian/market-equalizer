@@ -530,13 +530,25 @@ sub chart_plot {
         my $color = hex_to_string( $region->{color} );
     }
 
+    my %titles = (
+        value => 'Cumulative possible daily profits',
+        adjusted_value => 'Cumulative profits adjusted for competition',
+        competition => 'Competition',
+    );
+
+    my %y_labels = (
+        value => 'Mill ISK',
+        adjusted_value => 'Mill ISK',
+        competition => 'Percent',
+    );
+
     my ($xmin, $ymin, $xmax, $ymax) = $img->getBounds();
     $img->{'_xmax'} = $c->{graph_x_max};
     $img->setGraphOptions ('horGraphOffset' => 40,
                             'vertGraphOffset' => 20,
-                            'title' => $target,
+                            'title' => $titles{$target},
                             'horAxisLabel' => 'Time',
-                            'vertAxisLabel' => 'Mill ISK' );
+                            'vertAxisLabel' => $y_labels{$target} );
 
     my $ticks = $c->get_time_ticks;
     $img->setGraphOptions ( 'xTickLabels' => $ticks ) or die ($img->error);
