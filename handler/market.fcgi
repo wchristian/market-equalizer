@@ -40,7 +40,7 @@ while (my $q = new CGI::Fast) {
 
     my $duration = time - $start;
 
-    leaksz( 'profile', sub { log_memory( { query => Dumper($q), duration => $duration, webapp => $webapp }, @_ ) } );
+    leaksz( 'profile', sub { log_memory( { duration => $duration, webapp => $webapp }, @_ ) } );
 }
 
 exit;
@@ -53,12 +53,12 @@ sub log_memory {
     $data->{webapp}->dbh->do(
         "
             INSERT INTO emo_profile_log
-            ( log_time, guid, program, in_out, path_info, mem_change, duration, query_data )
+            ( log_time, guid, program, in_out, path_info, mem_change, duration )
             VALUES
             (?,?,?,?,?,?,?,?)
         ",
         undef,
-        $now, $guid, $0, $in_out, $ENV{PATH_INFO}, $change, $data->{duration}, $data->{query}
+        $now, $guid, $0, $in_out, $ENV{PATH_INFO}, $change, $data->{duration}
     );
 
     return;
