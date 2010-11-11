@@ -487,6 +487,17 @@ sub get_data {
     return values %regions;
 }
 
+sub create_list_of_random_cols {
+    my ( $c ) = @_;
+
+    $c->{created_colors_cache} = [];
+    while ( @{$c->{created_colors_cache}} < 68) { $c->random_color_hex(); }
+    use Data::Dumper;
+    print "\n\n\n".Dumper($c->{created_colors_cache});
+
+    return;
+}
+
 sub get_region_name {
     my ( $c, $region ) = @_;
 
@@ -580,18 +591,18 @@ sub get_time_ticks {
 
 sub random_color_hex
 {
+    my ( $c ) = @_;
+
     my @hex;
 
-    push( @hex, rand 255 ) for ( 0 .. 2 );
+    push( @hex, int rand 255 ) for ( 0 .. 2 );
 
-    while ( !is_colorful(@hex) ) {
+    while ( !$c->is_colorful(@hex) ) {
         shift @hex;
-        push @hex, rand 255;
+        push @hex, int rand 255;
     }
 
-    #$_ = sprintf( "%02x", $_ ) for (@hex);
-
-    #my $color = $hex[0] . $hex[1] . $hex[2];
+    push @{ $c->{created_colors_cache} }, \@hex;
 
     return \@hex;
 }
@@ -609,7 +620,7 @@ sub hex_to_string {
 # function checks rgb colour against HSV constraints, returns 1 if it's sufficiently colourful, 0 if not
 sub is_colorful
 {
-    my @colours = @_;
+    my ( $c, @colours ) = @_;
 
     $_ /= 255 for (@colours);
 
@@ -618,7 +629,7 @@ sub is_colorful
       $colours[1] * $colours[1] * .691 +
       $colours[2] * $colours[2] * .068);
 
-    return 0 if $brightness > 0.7;
+    return 0 if $brightness > 0.85;
     return 0 if $brightness < 0.3;
 
     my $value 	   = max @colours;
@@ -626,7 +637,13 @@ sub is_colorful
     my $delta      = $value - $min;
     my $saturation = $delta / $value;
 
-    return 0 if $saturation < 0.8;
+    return 0 if $saturation < 0.65;
+
+    for my $ex ( @{ $c->{created_colors_cache} } ) {
+        my $diff = 0;
+        $diff += abs( $ex->[$_]/255 - $colours[$_] ) for 0..2;
+        return 0 if $diff < .3;
+    }
 
     return 1;
 }
