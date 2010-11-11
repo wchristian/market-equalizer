@@ -471,7 +471,6 @@ sub get_data {
 
     my %regions;
     for ( @rows ) {
-        next if $_->{regionid} == 10000065;
         $c->{graph_x_offset} ||= $_->{timestamp};
         $_->{timestamp} -= $c->{graph_x_offset};
         $_->{value} /= 1_000_000;
