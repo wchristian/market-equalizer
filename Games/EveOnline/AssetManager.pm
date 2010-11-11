@@ -4,7 +4,8 @@ use base 'Games::EveOnline::AssetManager::CABase';
 $|=1;
 use Games::EveOnline::AssetManager::Tools;
 
-use List::Util qw( shuffle reduce );
+use List::Util qw( shuffle reduce min max );
+use Plot;
 
 memoize( 'expiry_to_timestamp' );
 
@@ -432,7 +433,186 @@ sub record_region_value {
     my $query = "INSERT INTO eaa_region_value ( regionid, value, competition, created, timestamp ) VALUES ( ?, ?, ?, UTC_TIMESTAMP(), ? )";
     $c->dbh->do($query, undef, $requested_region->{regionid}, $value, $competition, time );
 
+    $c->update_graphs;
+
     return;
+}
+
+sub update_graphs {
+    my ( $c ) = @_;
+
+    my @data = $c->get_data;
+    $c->summarize_xy_data($_) for @data;
+
+    my $html = '';
+    for my $region ( @data ) {
+        my $color = hex_to_string( $region->{color} );
+        $html .= "<span style='color: $color;'>&bull;$region->{name}</span><br />";
+    }
+    write_file "legend.html", {binmode => ':raw'},  $html;
+
+    $c->chart_plot( $_, @data ) for qw( value competition adjusted_value );
+
+    return;
+}
+
+sub get_data {
+    my ( $c ) = @_;
+
+    my @rows = @{ $c->dbh->selectall_arrayref("select * from eaa_region_value order by timestamp", {Slice=>{}}) };
+
+    delete $c->{$_} for qw( graph_x_offset graph_x_max );
+
+    my %regions;
+    for ( @rows ) {
+        next if $_->{regionid} == 10000065;
+        $c->{graph_x_offset} ||= $_->{timestamp};
+        $_->{timestamp} -= $c->{graph_x_offset};
+        $_->{value} /= 1_000_000;
+        $_->{value} = int $_->{value};
+
+        push @{$regions{$_->{regionid}}->{rows}}, $_;
+        $regions{$_->{regionid}}->{id} = $_->{regionid};
+    }
+
+    $_->{color} = random_color_hex() for values %regions;
+    $_->{name} = $c->get_region_name( $_ ) for values %regions;
+
+    $c->{graph_x_max} = time - $c->{graph_x_offset};
+
+    return values %regions;
+}
+
+sub get_region_name {
+    my ( $c, $region ) = @_;
+
+    my $name = $c->dbh->selectrow_array("select regionname from mapregions where regionid = ?", undef, $region->{id} );
+
+    return $name;
+}
+
+sub summarize_xy_data {
+    my ( $c, $region ) = @_;
+
+    for ( 0 .. $#{ $region->{rows} } ) {
+        my $tuple = $region->{rows}[$_];
+        my $x = $tuple->{timestamp};
+
+        my %y;
+        $y{value} = $tuple->{value};
+        $y{competition} = $tuple->{competition};
+        $y{adjusted_value} = $tuple->{value} / $tuple->{competition} if $tuple->{competition};
+        $y{adjusted_value} ||= 0;
+
+        push @{$region->{points_value}}, [ $x, $y{value} ];
+        push @{$region->{points_competition}}, [ $x, $y{competition} ];
+        push @{$region->{points_adjusted_value}}, [ $x, $y{adjusted_value} ];
+    }
+
+    return;
+}
+
+sub chart_plot {
+    my ( $c, $target, @data ) = @_;
+
+    my $img = Plot->new( 800, 250 );
+
+    for my $region ( @data ) {
+        my @dataset = map { @{$_} } @{$region->{"points_$target"}};
+        $img->setData ( \@dataset, $region->{color} ) or die( $img->error() );
+    }
+
+    for my $region ( @data ) {
+        my $color = hex_to_string( $region->{color} );
+    }
+
+    my ($xmin, $ymin, $xmax, $ymax) = $img->getBounds();
+    $img->{'_xmax'} = $c->{graph_x_max};
+    $img->setGraphOptions ('horGraphOffset' => 200,
+                            'vertGraphOffset' => 20,
+                            'title' => $target,
+                            'horAxisLabel' => 'Time',
+                            'vertAxisLabel' => 'Mill ISK' );
+
+    my $ticks = $c->get_time_ticks;
+    $img->setGraphOptions ( 'xTickLabels' => $ticks ) or die ($img->error);
+    write_file "image_$target.png", {binmode => ':raw'},  $img->draw;
+
+    return;
+}
+
+sub get_time_ticks {
+    my ( $c ) = @_;
+
+    my $start = $c->{graph_x_offset};
+    my $now_dt = DateTime->today;
+    my %ticks;
+
+    while( $now_dt->epoch > $start ) {
+        my $index = $now_dt->epoch - $start;
+        $ticks{$index} = $now_dt->ymd;
+        $now_dt = $now_dt->subtract( days => 1 );
+    }
+
+    return \%ticks;
+}
+
+=cut
+=cut
+
+
+
+sub random_color_hex
+{
+    my @hex;
+
+    push( @hex, rand 255 ) for ( 0 .. 2 );
+
+    while ( !is_colorful(@hex) ) {
+        shift @hex;
+        push @hex, rand 255;
+    }
+
+    #$_ = sprintf( "%02x", $_ ) for (@hex);
+
+    #my $color = $hex[0] . $hex[1] . $hex[2];
+
+    return \@hex;
+}
+
+sub hex_to_string {
+    my ( $hex ) = @_;
+    my @hex = @{$hex};
+
+    $_ = sprintf( "%02x", $_ ) for @hex;
+    my $color = "\#" . $hex[0] . $hex[1] . $hex[2];
+
+    return $color;
+}
+
+# function checks rgb colour against HSV constraints, returns 1 if it's sufficiently colourful, 0 if not
+sub is_colorful
+{
+    my @colours = @_;
+
+    $_ /= 255 for (@colours);
+
+    my $brightness = sqrt(
+      $colours[0] * $colours[0] * .241 +
+      $colours[1] * $colours[1] * .691 +
+      $colours[2] * $colours[2] * .068);
+
+    return 0 if $brightness > 0.7;
+    return 0 if $brightness < 0.3;
+
+    my $value 	   = max @colours;
+    my $min        = min @colours;
+    my $delta      = $value - $min;
+    my $saturation = $delta / $value;
+
+    return 0 if $saturation < 0.8;
+
+    return 1;
 }
 
 sub get_region_competition {
