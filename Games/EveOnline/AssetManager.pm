@@ -461,7 +461,9 @@ sub update_graphs {
 sub get_data {
     my ( $c ) = @_;
 
-    my @rows = @{ $c->dbh->selectall_arrayref("select * from eaa_region_value order by timestamp", {Slice=>{}}) };
+    my $window_start = time - 60*60*24*30;
+    my $query = "select * from eaa_region_value where timestamp > ? order by timestamp";
+    my @rows = @{ $c->dbh->selectall_arrayref( $query, {Slice=>{}}, $window_start ) };
 
     delete $c->{$_} for qw( graph_x_offset graph_x_max );
 
