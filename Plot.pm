@@ -154,7 +154,9 @@ sub draw {
   $self->_getMinMax() unless $self->{'_validMinMax'};
   $self->_drawTitle() if $self->{'_title'}; # vert offset may be increased
   $self->_drawAxes();
+  $self->{_im}->setThickness(2);
   $self->_drawData();
+  $self->{_im}->setThickness(1);
 
   # construct the image and return it.
   # $_image_types[0] is the supported GD format, gif or png or jpeg
@@ -389,8 +391,8 @@ sub _drawData {
 			     $self->{'_data'}->{$dataSetLabel} [0],
 			     $self->{'_data'}->{$dataSetLabel} [1]
 			    );
-    $self->{'_im'}->arc($px, $py,4,4,0,360,$color)
-      unless $self->{'_dataStyle'}->{$dataSetLabel} =~ /nopoint/i;
+    #$self->{'_im'}->arc($px, $py,4,4,0,360,$color)
+    #  unless $self->{'_dataStyle'}->{$dataSetLabel} =~ /nopoint/i;
 
     ($prevpx, $prevpy) = ($px, $py);
 
@@ -412,8 +414,7 @@ sub _drawData {
 				    );
 
       # draw point, maybe
-      $self->{'_im'}->arc($px, $py,4,4,0,360,$color)
-	unless $self->{'_dataStyle'}->{$dataSetLabel} =~ /nopoint/i;
+      $self->{'_im'}->arc($px, $py,4,4,0,360,$color) if $i == $num-2;
 
       # draw line from previous point, maybe
       if ($self->{'_dataStyle'}->{$dataSetLabel} =~ /dashed/) {
