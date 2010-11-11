@@ -410,6 +410,8 @@ sub list : Path(list/) {
 sub record_region_value {
     my ( $c, $assets, $requested_region ) = @_;
 
+    $c->update_graphs if !-e 'image_value.png' or $^O eq 'MSWin32';
+
     my %cfg = %{$c->{sess}};
     return if $cfg{accounting} != 3;
     return if $cfg{industry_skill} != 5;
