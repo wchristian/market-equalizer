@@ -98,11 +98,7 @@ sub is_colorful
     return 0 if $brightness > 0.7;
     return 0 if $brightness < 0.3;
 
-    my $value = max @colours;
-    #
-    #return 0 if $value > 0.9;
-    #return 0 if $value < 0.1;
-
+    my $value 	   = max @colours;
     my $min        = min @colours;
     my $delta      = $value - $min;
     my $saturation = $delta / $value;
