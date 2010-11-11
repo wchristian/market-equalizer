@@ -257,6 +257,7 @@ sub _init {
 
   #  allocate some colors
   $self->{'_white'} = $self->{'_im'}->colorAllocate(255,255,255);
+  $self->{'_gray'} = $self->{'_im'}->colorAllocate(254,254,254);
   $self->{'_black'} = $self->{'_im'}->colorAllocate(0,0,0);
   $self->{'_red'} = $self->{'_im'}->colorAllocate(255,0,0);
   $self->{'_blue'} = $self->{'_im'}->colorAllocate(0,0,255);
@@ -467,7 +468,7 @@ sub _drawAxes {
   ### horizontal axis
   my ($p1x, $p1y) = $self->_data2pxl ($self->{'_xmin'}, 0);
   my ($p2x, $p2y) = $self->_data2pxl ($self->{'_xmax'}, 0);
-  $self->{'_im'}->line($p1x, $p1y, $p2x, $p2y, $self->{'_black'});
+  $self->{'_im'}->line($p1x, $p1y, $p2x, $p2y, $self->{'_gray'});
 
   ### axis label
   my $len = $w * length ($self->{'_horAxisLabel'});
@@ -475,7 +476,7 @@ sub _drawAxes {
     ? ($self->{'_imx'}-10-$len) : ($p2x-$len/2);  #   or right justify
   $self->{'_im'}->string (gdSmallFont, $xStart, $p2y+3*$h/2,
 			  $self->{'_horAxisLabel'},
-			  $self->{'_black'});
+			  $self->{'_gray'});
 
   print STDERR "\nHor: p1 ($p1x, $p1y) p2 ($p2x, $p2y)\n"
     if $self->{'_debugging'};
@@ -483,13 +484,13 @@ sub _drawAxes {
   ### vertical axis
   ($p1x, $p1y) = $self->_data2pxl (0, $self->{'_ymin'});
   ($p2x, $p2y) = $self->_data2pxl (0, $self->{'_ymax'});
-  $self->{'_im'}->line($p1x, $p1y, $p2x, $p2y, $self->{'_black'});
+  $self->{'_im'}->line($p1x, $p1y, $p2x, $p2y, $self->{'_gray'});
 
   ### axis label
   $xStart = $p2x - length ($self->{'_vertAxisLabel'}) * $w / 2;
   $self->{'_im'}->string (gdSmallFont, ($xStart>10 ? $xStart : 10), $p2y - 2*$h,
 			  $self->{'_vertAxisLabel'},
-			  $self->{'_black'});
+			  $self->{'_gray'});
 
   print STDERR "Ver: p1 ($p1x, $p1y) p2 ($p2x, $p2y)\n"
     if $self->{'_debugging'};
@@ -511,12 +512,12 @@ sub _drawAxes {
     foreach ( keys %{$self->{'_xTickLabels'}} ) {
 
       ($px,$py) = $self->_data2pxl($_, 0);
-      $self->{'_im'}->line($px, $py-2, $px, $py+2, $self->{'_black'});
+      $self->{'_im'}->line($px, $py-2, $px, $py+2, $self->{'_gray'});
       $self->{'_im'}->string ( gdSmallFont,
 			       $px-length( ${$self-> {'_xTickLabels'}}{$_} ) * $w/2,
                                $py+$h/2,
                                ${$self->{'_xTickLabels'}}{$_},
-                               $self->{'_black'}
+                               $self->{'_gray'}
      );
     }
 
@@ -533,10 +534,10 @@ sub _drawAxes {
 
     for ($i=$self->{'_xmin'}; $i <= $self->{'_xmax'}; $i+=$step ) {
       ($px,$py) = $self->_data2pxl($i, 0);
-      $self->{'_im'}->line($px, $py-2, $px, $py+2, $self->{'_black'});
+      $self->{'_im'}->line($px, $py-2, $px, $py+2, $self->{'_gray'});
       $self->{'_im'}->string (gdSmallFont,
 			      $px-length($i)*$w/2, $py+$h/2,
-			      $i, $self->{'_black'}) unless $i == 0;
+			      $i, $self->{'_gray'}) unless $i == 0;
     }
     print STDERR "Horstep: $step ($self->{'_xmax'} - $self->{'_xmin'})/$self->{'_omx'})\n"
       if $self->{'_debugging'};
@@ -548,12 +549,12 @@ sub _drawAxes {
   if ($self->{'_yTickLabels'}) {
     foreach ( keys %{$self->{'_yTickLabels'}} ) {
       ($px,$py) = $self->_data2pxl(0, $_);
-      $self->{'_im'}->line($px-2, $py, $px+2, $py, $self->{'_black'});
+      $self->{'_im'}->line($px-2, $py, $px+2, $py, $self->{'_gray'});
       $self->{'_im'}->string ( gdSmallFont,
 			       $px-(1+length( ${$self->{'_yTickLabels'}}{$_} )) * $h/2,
                                $py-$h/2,
                                ${$self->{'_yTickLabels'}}{$_},
-                               $self->{'_black'});
+                               $self->{'_gray'});
     }
   } else {
     $step = $self->{'_omy'};
@@ -563,10 +564,10 @@ sub _drawAxes {
 
     for ($i=$self->{'_ymin'}; $i <= $self->{'_ymax'}; $i+=$step ) {
       ($px,$py) = $self->_data2pxl (0, $i);
-      $self->{'_im'}->line($px-2, $py, $px+2, $py, $self->{'_black'});
+      $self->{'_im'}->line($px-2, $py, $px+2, $py, $self->{'_gray'});
       $self->{'_im'}->string (gdSmallFont,
 			      $px-5-length($i)*$w, $py-$h/2,
-			      $i, $self->{'_black'}) unless $i == 0;
+			      $i, $self->{'_gray'}) unless $i == 0;
     }
     print STDERR "Verstep: $step ($self->{'_ymax'} - $self->{'_ymin'})/$self->{'_omy'})\n"
       if $self->{'_debugging'};
@@ -597,7 +598,7 @@ sub _drawTitle {
   ($px,$py) = ($px - length ($self->{'_title'}) * $w/2, $py+$h/2);
   $self->{'_im'}->string (gdMediumBoldFont, $px, $py,
 			  $self->{'_title'},
-			  $self->{'_black'});
+			  $self->{'_gray'});
 }
 
 1;
