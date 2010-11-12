@@ -55,7 +55,7 @@ sub log_memory {
             INSERT INTO eaa_profile_log
             ( log_time, guid, program, in_out, path_info, mem_change, duration )
             VALUES
-            (?,?,?,?,?,?,?,?)
+            (?,?,?,?,?,?,?)
         ",
         undef,
         $now, $guid, $0, $in_out, $ENV{PATH_INFO}, $change, $data->{duration}
