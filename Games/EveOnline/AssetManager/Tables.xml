@@ -67,7 +67,8 @@
                 "path_info" VARCHAR(300),
                 "mem_change" INTEGER,
                 "duration" DOUBLE PRECISION,
-                "query_data" bytea
+                "query_data" bytea,
+                "session_id" VARCHAR(300)
             );
         </phrase>
 

@@ -53,12 +53,12 @@ sub log_memory {
     $data->{webapp}->dbh->do(
         "
             INSERT INTO eaa_profile_log
-            ( log_time, guid, program, in_out, path_info, mem_change, duration )
+            ( log_time, guid, program, in_out, path_info, mem_change, duration, session_id )
             VALUES
-            (?,?,?,?,?,?,?)
+            (?,?,?,?,?,?,?,?)
         ",
         undef,
-        $now, $guid, $0, $in_out, $ENV{PATH_INFO}, $change, $data->{duration}
+        $now, $guid, $0, $in_out, $ENV{PATH_INFO}, $change, $data->{duration}, $data->{webapp}->session->id
     );
 
     return;
