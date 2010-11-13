@@ -456,7 +456,8 @@ sub update_graphs {
     }
     write_file "legend.html", {binmode => ':raw'},  $html;
 
-    $c->chart_plot( $_, @data ) for qw( value competition adjusted_value );
+    $c->chart_plot( $_, 1, @data ) for qw( value competition adjusted_value );
+    $c->chart_plot( $_, 0, @data ) for qw( value competition adjusted_value );
 
     return;
 }
@@ -532,9 +533,12 @@ sub summarize_xy_data {
 }
 
 sub chart_plot {
-    my ( $c, $target, @data ) = @_;
+    my ( $c, $target, $large, @data ) = @_;
 
-    my $img = Plot->new( 600, 250 );
+    my ( $x, $y, $name ) = ( 600, 250, 'image_' );
+    ( $x, $y, $name ) = ( 1280, 1024, 'image_large_' ) if $large;
+
+    my $img = Plot->new( $x, $y );
 
     for my $region ( @data ) {
         my @dataset = map { @{$_} } @{$region->{"points_$target"}};
@@ -567,7 +571,8 @@ sub chart_plot {
 
     my $ticks = $c->get_time_ticks;
     $img->setGraphOptions ( 'xTickLabels' => $ticks ) or die ($img->error);
-    write_file "image_$target.png", {binmode => ':raw'},  $img->draw;
+
+    write_file "$name$target.png", {binmode => ':raw'},  $img->draw;
 
     return;
 }
