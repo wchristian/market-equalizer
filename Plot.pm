@@ -256,7 +256,7 @@ sub _init {
   ($self->{'_xTickLabels'}, $self->{'_yTickLabels'}) = (0,0);
 
   #  allocate some colors
-  $self->{'_white'} = $self->{'_im'}->colorAllocate(255,255,255);
+  $self->{'_white'} = $self->{'_im'}->colorAllocate( 45, 45, 55 );
   $self->{'_gray'} = $self->{'_im'}->colorAllocate(254,254,254);
   $self->{'_black'} = $self->{'_im'}->colorAllocate(0,0,0);
   $self->{'_red'} = $self->{'_im'}->colorAllocate(255,0,0);
@@ -264,7 +264,7 @@ sub _init {
   $self->{'_green'} = $self->{'_im'}->colorAllocate(0,255,0);
 
   # make the background transparent and interlaced
-  $self->{'_im'}->transparent($self->{'_white'});
+  #$self->{'_im'}->transparent($self->{'_white'}) if $_[3];
   $self->{'_im'}->interlaced('true');
 
   # Put a black frame around the picture
