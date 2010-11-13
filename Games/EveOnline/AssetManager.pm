@@ -360,7 +360,7 @@ sub list : Path(list/) {
     my @ids;
     push @ids, $c->query_vars->{id} if $c->query_vars->{id};
 
-    my ( $assets, $non_sold_items ) = $c->get_asset_list( @ids, 26086 );
+    my ( $assets, $non_sold_items ) = $c->get_asset_list( @ids );
 
     $c->record_region_value( $assets, $requested_region );
 
