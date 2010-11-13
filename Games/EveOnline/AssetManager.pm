@@ -360,7 +360,7 @@ sub list : Path(list/) {
     my @ids;
     push @ids, $c->query_vars->{id} if $c->query_vars->{id};
 
-    my $assets = $c->get_asset_list( @ids );
+    my ( $assets, $non_sold_items ) = $c->get_asset_list( @ids, 26086 );
 
     $c->record_region_value( $assets, $requested_region );
 
@@ -403,6 +403,7 @@ sub list : Path(list/) {
         truncate => \&trunc,
         sort_list => \@sort_list,
         emo_status => $emo_status,
+        non_sold_items => $non_sold_items,
         %times
     );
 
@@ -779,6 +780,8 @@ sub get_asset_list {
 
     $c->fill_missing_value_ids;
 
+    ( $assets, my $non_sold_items ) = $c->separate_non_sold_items( $assets );
+
     $c->extend_value_data( $assets );
 
     $assets = $c->filter_asset_list( $assets ) if !@items;
@@ -801,7 +804,23 @@ sub get_asset_list {
 
     $c->prepare_assets_for_printing( $assets->[0]{contents} );
 
+    return ( $assets, $non_sold_items ) if wantarray;
     return $assets;
+}
+
+sub separate_non_sold_items {
+    my ( $c, $assets ) = @_;
+
+    my ( @real_assets, @non_sold_items );
+
+    for ( @{$assets} ) {
+        my $id = $_->{typeid};
+        my $target = \@real_assets;
+        $target = \@non_sold_items if !$c->{caches}{item_values}{$id}{sell_price};
+        push @{$target}, $_;
+    }
+
+    return ( \@real_assets, \@non_sold_items );
 }
 
 sub get_market_groups_to_skip {
