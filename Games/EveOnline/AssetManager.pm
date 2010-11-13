@@ -479,6 +479,7 @@ sub get_data {
         push @{$regions{$_->{regionid}}->{rows}}, $_;
         $regions{$_->{regionid}}->{id} = $_->{regionid};
     }
+    $c->{graph_x_offset} ||= time - 1;
 
     my @rand_cols = shuffle @{$random_colors};
     $_->{color} = pop @rand_cols for values %regions;
@@ -656,7 +657,7 @@ sub get_region_competition {
     my ( $hit_count, $all_hits ) = $c->get_hit_data;
 
     my $key = "/list/$region->{path_name}";
-    my $hits = $hit_count->{$key}{count};
+    my $hits = $hit_count->{$key}{count} || 1;
     my $competition = sprintf "%.2f", 100 * $hits / $all_hits;
 
     return $competition;
