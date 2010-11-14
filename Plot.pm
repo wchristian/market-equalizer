@@ -153,6 +153,7 @@ sub draw {
   # draw stuff in the GD object
   $self->_getMinMax() unless $self->{'_validMinMax'};
   $self->_drawTitle() if $self->{'_title'}; # vert offset may be increased
+  $self->_draw_grid();
   $self->{_im}->setThickness(2);
   $self->_drawData();
   $self->{_im}->setThickness(1);
@@ -258,6 +259,7 @@ sub _init {
   #  allocate some colors
   $self->{'_white'} = $self->{'_im'}->colorAllocate( 45, 45, 55 );
   $self->{'_gray'} = $self->{'_im'}->colorAllocate(254,254,254);
+  $self->{'_medium'} = $self->{'_im'}->colorAllocate(72,72,72);
   $self->{'_black'} = $self->{'_im'}->colorAllocate(0,0,0);
   $self->{'_red'} = $self->{'_im'}->colorAllocate(255,0,0);
   $self->{'_blue'} = $self->{'_im'}->colorAllocate(0,0,255);
@@ -451,6 +453,80 @@ sub _data2pxl {
 	   int ( $self->{'_ay'}
 		 - ($y - $self->{'_ymin'}) * $self->{'_yslope'} )
 	 );
+}
+
+
+
+# draw the axes, axis labels, ticks and tick labels
+# usage: $self->_drawAxes
+sub _draw_grid {
+  # axes run from data points: x -- ($xmin,0) ($xmax,0);
+  #                            y -- (0,$ymin) (0,$ymax);
+  # these mins and maxes are decimal orders of magnitude bounding the data
+
+  my $self = shift;
+  my ($w,$h) = (gdSmallFont->width, gdSmallFont->height);
+
+  ### horizontal axis
+  my ($p1x, $p1y) = $self->_data2pxl( $self->{'_xmin'}, 0 );
+  my ($p2x, $p2y) = $self->_data2pxl( $self->{'_xmax'}, 0 );
+  $self->{'_im'}->line($p1x, $p1y, $p2x, $p2y, $self->{'_gray'});
+
+  ### vertical axis
+  my ($vp1x, $vp1y) = $self->_data2pxl (0, $self->{'_ymin'});
+  my ($vp2x, $vp2y) = $self->_data2pxl (0, $self->{'_ymax'});
+  $self->{'_im'}->line($vp1x, $vp1y, $vp2x, $vp2y, $self->{'_gray'});
+
+  ### draw axis ticks and tick labels
+  my ($i,$px,$py, $step);
+
+
+  ### horizontal
+  if ($self->{'_xTickLabels'}) {
+
+    # a hashref with horizontal data point and label
+    # example: %{$self->{'_xTickLabels'} = (10 => 'Ten', 20 => 'Twenty', ...)
+    foreach ( keys %{$self->{'_xTickLabels'}} ) {
+
+      ($px,$py) = $self->_data2pxl($_, 0);
+      $self->{'_im'}->line($px, $vp1y, $px, $vp2y, $self->{'_medium'});
+    }
+
+  }
+  else {
+    # horizontal step calculation
+    $step = $self->{'_omx'};
+    # step too large
+    $step /= 2  if ($self->{'_xmax'} - $self->{'_xmin'}) / $step < 6;
+    # once again. A poor hack for case  om = max.
+    $step /= 2  if ($self->{'_xmax'} - $self->{'_xmin'}) / $step < 6;
+    # step too small. As long as we are doing poor hacks
+    $step *= 2  if ($self->{'_xmax'} - $self->{'_xmin'}) / $step > 12;
+
+    for ($i=$self->{'_xmin'}; $i <= $self->{'_xmax'}; $i+=$step ) {
+      ($px,$py) = $self->_data2pxl($i, 0);
+      $self->{'_im'}->line($px, $vp1y, $px, $vp2y, $self->{'_medium'});
+    }
+  }
+
+  ### vertical
+  if ($self->{'_yTickLabels'}) {
+    foreach ( keys %{$self->{'_yTickLabels'}} ) {
+      ($px,$py) = $self->_data2pxl(0, $_);
+      $self->{'_im'}->line($p1x, $py, $p2x, $py, $self->{'_medium'});
+    }
+  }
+  else {
+    $step = $self->{'_omy'};
+    $step /= 2  if ($self->{'_ymax'} - $self->{'_ymin'}) / $step < 6;
+    $step /= 2  if ($self->{'_ymax'} - $self->{'_ymin'}) / $step < 6;
+    $step *= 2  if ($self->{'_ymax'} - $self->{'_ymin'}) / $step > 12;
+
+    for ($i=$self->{'_ymin'}; $i <= $self->{'_ymax'}; $i+=$step ) {
+      ($px,$py) = $self->_data2pxl (0, $i);
+      $self->{'_im'}->line($p1x, $py, $p2x, $py, $self->{'_medium'});
+    }
+  }
 }
 
 
