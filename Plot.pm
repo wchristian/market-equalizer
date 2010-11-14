@@ -153,10 +153,10 @@ sub draw {
   # draw stuff in the GD object
   $self->_getMinMax() unless $self->{'_validMinMax'};
   $self->_drawTitle() if $self->{'_title'}; # vert offset may be increased
-  $self->_drawAxes();
   $self->{_im}->setThickness(2);
   $self->_drawData();
   $self->{_im}->setThickness(1);
+  $self->_drawAxes();
 
   # construct the image and return it.
   # $_image_types[0] is the supported GD format, gif or png or jpeg
