@@ -259,7 +259,7 @@ sub _init {
   #  allocate some colors
   $self->{'_white'} = $self->{'_im'}->colorAllocate( 45, 45, 55 );
   $self->{'_gray'} = $self->{'_im'}->colorAllocate(254,254,254);
-  $self->{'_medium'} = $self->{'_im'}->colorAllocate(72,72,72);
+  $self->{'_medium'} = $self->{'_im'}->colorAllocate(64,64,64);
   $self->{'_black'} = $self->{'_im'}->colorAllocate(0,0,0);
   $self->{'_red'} = $self->{'_im'}->colorAllocate(255,0,0);
   $self->{'_blue'} = $self->{'_im'}->colorAllocate(0,0,255);
