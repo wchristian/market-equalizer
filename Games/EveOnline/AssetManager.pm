@@ -521,7 +521,7 @@ sub summarize_xy_data {
         my %y;
         $y{value} = $tuple->{value};
         $y{competition} = $tuple->{competition};
-        $y{adjusted_value} = $tuple->{value} / min( 1, $tuple->{competition} ) if $tuple->{competition};
+        $y{adjusted_value} = $tuple->{value} / max( 1, $tuple->{competition} ) if $tuple->{competition};
         $y{adjusted_value} ||= 0;
 
         push @{$region->{points_value}}, [ $x, $y{value} ];
