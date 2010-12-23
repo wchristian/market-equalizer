@@ -210,6 +210,13 @@ $(document).ready(function(){
             $("#help_link2").hide("slow");
         }
     );
+    $("#em_status_link").click(
+        function(event) {
+            event.preventDefault();
+            $("#em_status").show("slow");
+            $("#em_status_link").hide("slow");
+        }
+    );
 
     $("#region_links_link").toggle(
         function(event) {
